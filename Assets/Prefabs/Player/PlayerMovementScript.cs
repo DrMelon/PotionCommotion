@@ -47,7 +47,7 @@ public class PlayerMovementScript : MonoBehaviour
     }
 	
 	// Update is called once per frame
-	void FixedUpdate ()
+	void Update ()
     {
         HandleInput();
         Move();
@@ -180,7 +180,8 @@ public class PlayerMovementScript : MonoBehaviour
         if(Mathf.Abs(Velocity.x) > 0.001f || Mathf.Abs(Velocity.z) > 0.001f)
         {
             Vector3 facingDirection = new Vector3(Velocity.x, 0, Velocity.z);
-            transform.rotation = Quaternion.LookRotation(facingDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(facingDirection), Time.deltaTime * 25);
+            
         }
 
 
@@ -200,21 +201,82 @@ public class PlayerMovementScript : MonoBehaviour
             // If we're falling through the air...
             if(!OnGround && Velocity.y < 0)
             {
-                //if (rayInfo.distance <= 0.5f)
-                //{
-                    if(rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
-                    {
-                        OnGround = true;
-                        Velocity.y = 0;
-                        Vector3 newPos = transform.position;
-                        newPos.y = rayInfo.point.y + this.transform.localScale.y / 2;
-                        transform.position = newPos;
-                    }
+
+                if(rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                {
+                    OnGround = true;
+                    Velocity.y = 0;
+                    Vector3 newPos = transform.position;
+                    newPos.y = rayInfo.point.y + this.transform.localScale.y / 2;
+                    transform.position = newPos;
+                }
                     
-                //}
+                
             }
 
         }
+
+        if(Velocity.x > 0)
+        {
+            if (GetComponent<Rigidbody>().SweepTest(Vector3.right, out rayInfo, Velocity.magnitude))
+            {
+                // Wall collision
+                if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                {
+                    Vector3 newPos = transform.position;
+
+                    newPos.x = rayInfo.point.x - Velocity.x / 2;
+
+                    Velocity.x = 0;
+                }
+            }
+        }
+        if(Velocity.x < 0)
+        {
+            if (GetComponent<Rigidbody>().SweepTest(-Vector3.right, out rayInfo, Velocity.magnitude))
+            {
+                // Wall collision
+                if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                {
+                    Vector3 newPos = transform.position;
+
+                    newPos.x = rayInfo.point.x + Velocity.x / 2;
+
+                    Velocity.x = 0;
+                }
+            }
+        }
+        if (Velocity.z > 0)
+        {
+            if (GetComponent<Rigidbody>().SweepTest(Vector3.forward, out rayInfo, Velocity.magnitude))
+            {
+                // Wall collision
+                if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                {
+                    Vector3 newPos = transform.position;
+
+                    newPos.z = rayInfo.point.z;
+
+                    Velocity.z = 0;
+                }
+            }
+        }
+        if (Velocity.z < 0)
+        {
+            if (GetComponent<Rigidbody>().SweepTest(-Vector3.forward, out rayInfo, Velocity.magnitude))
+            {
+                // Wall collision
+                if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                {
+                    Vector3 newPos = transform.position;
+
+                    newPos.z = rayInfo.point.z;
+
+                    Velocity.z = 0;
+                }
+            }
+        }
+
 
 
 
