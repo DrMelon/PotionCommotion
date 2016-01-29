@@ -21,6 +21,7 @@ public class PlayerCauldronScript : MonoBehaviour
 	public PotionRecipeStruct[] PotionRecipes;
 	public GameObject OwnerPlayer;
 	public GameObject LiquidSurface;
+	public Material Material_Colour;
 
 	// Store the ingredients currently in the cauldron (GameObject)
 	ArrayList Ingredients = new ArrayList();
@@ -29,6 +30,9 @@ public class PlayerCauldronScript : MonoBehaviour
 	void Start()
 	{
 		StartLiquidY = LiquidSurface.transform.localPosition.y;
+
+		ParticleSystem liquidparticle = LiquidSurface.transform.GetChild( 0 ).GetComponent<ParticleSystem>();
+		liquidparticle.GetComponent<Renderer>().material = LiquidSurface.GetComponent<Renderer>().material;
 	}
 
 	void Update()
@@ -94,8 +98,11 @@ public class PlayerCauldronScript : MonoBehaviour
 			}
 		}
 		Renderer liquidrender = vial.GetComponent<PotionVialBaseScript>().LiquidMesh.GetComponent<Renderer>();
+		liquidrender.material = Material_Colour;
 		liquidrender.material.color = LiquidSurface.GetComponent<Renderer>().material.color;
 		liquidrender.material.color = new Color( liquidrender.material.color.r, liquidrender.material.color.g, liquidrender.material.color.b, 1 );
+		liquidrender.material.SetFloat( "_Mode", 1.0f );
+		vial.GetComponent<PotionVialBaseScript>().InheritMaterial();
 
 		// Send potion vial back
 
