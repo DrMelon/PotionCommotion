@@ -81,10 +81,9 @@ public class PlayerMovementScript : MonoBehaviour
             Velocity = Velocity * (MoveFriction * MoveFrictionMultiplier);
         }
 
+
         // Check for max move speed. [TODO] If Not Diving.
-        Velocity.x = Mathf.Clamp(Velocity.x, -(MoveSpeed * MoveSpeedMultiplier), (MoveSpeed * MoveSpeedMultiplier));
-        Velocity.y = Mathf.Clamp(Velocity.y, -(MoveSpeed * MoveSpeedMultiplier), (MoveSpeed * MoveSpeedMultiplier));
-        Velocity.z = Mathf.Clamp(Velocity.z, -(MoveSpeed * MoveSpeedMultiplier), (MoveSpeed * MoveSpeedMultiplier));
+        Velocity = Vector3.ClampMagnitude(Velocity, MoveSpeed * MoveSpeedMultiplier);
 
         // Check for wall or player VS player collisions here, adjusting velocity as necessary.
         // [TODO]
@@ -92,6 +91,9 @@ public class PlayerMovementScript : MonoBehaviour
         // Update Position from Velocity
 
         transform.position = transform.position + Velocity;
+
+        // Rotate them to face their velocity a lil bit.
+        transform.rotation = Quaternion.LookRotation(Velocity);
 
     }
 }
