@@ -25,4 +25,12 @@ public class PotionVialBaseScript : MonoBehaviour
 		Renderer renderer = LiquidMesh.GetComponent<Renderer>();
 		renderer.material = Instantiate( renderer.material );
 	}
+
+	public void InheritMaterial()
+	{
+		// Initialise the particle system for wobble effect
+		ParticleSystem liquidparticle = LiquidMesh.transform.GetChild( 0 ).GetComponent<ParticleSystem>();
+		liquidparticle.GetComponent<Renderer>().material = LiquidMesh.GetComponent<Renderer>().material;
+		liquidparticle.Play();
+	}
 }
