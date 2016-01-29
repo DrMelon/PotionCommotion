@@ -78,6 +78,7 @@ public class PlayerCauldronScript : MonoBehaviour
 			LiquidSurface.GetComponent<Renderer>().material.color = ingredientscript.Colour;
 
 			// Play sound
+			LiquidSurface.GetComponent<AudioSource>().Play();
 
 			// Remove physical ingredient object
 			Destroy( ingredient );
