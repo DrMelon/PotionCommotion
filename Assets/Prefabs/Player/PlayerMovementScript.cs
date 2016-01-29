@@ -216,16 +216,22 @@ public class PlayerMovementScript : MonoBehaviour
 
         }
 
+        
+
         if(Velocity.x > 0)
         {
-            if (GetComponent<Rigidbody>().SweepTest(Vector3.right, out rayInfo, Velocity.magnitude))
+            Ray theRay = new Ray(transform.position, Vector3.right);
+            if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
                 // Wall collision
                 if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
                 {
                     Vector3 newPos = transform.position;
 
-                    newPos.x = rayInfo.point.x - Velocity.x / 2;
+                    newPos.x = rayInfo.point.x - Velocity.magnitude;
+                    Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
+
+                    transform.position = newPos;
 
                     Velocity.x = 0;
                 }
@@ -233,14 +239,18 @@ public class PlayerMovementScript : MonoBehaviour
         }
         if(Velocity.x < 0)
         {
-            if (GetComponent<Rigidbody>().SweepTest(-Vector3.right, out rayInfo, Velocity.magnitude))
+            Ray theRay = new Ray(transform.position, -Vector3.right);
+            if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
                 // Wall collision
                 if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
                 {
                     Vector3 newPos = transform.position;
 
-                    newPos.x = rayInfo.point.x + Velocity.x / 2;
+                    newPos.x = rayInfo.point.x + Velocity.magnitude;
+                    Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
+
+                    transform.position = newPos;
 
                     Velocity.x = 0;
                 }
@@ -248,14 +258,18 @@ public class PlayerMovementScript : MonoBehaviour
         }
         if (Velocity.z > 0)
         {
-            if (GetComponent<Rigidbody>().SweepTest(Vector3.forward, out rayInfo, Velocity.magnitude))
+            Ray theRay = new Ray(transform.position, Vector3.forward);
+            if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
                 // Wall collision
                 if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
                 {
                     Vector3 newPos = transform.position;
 
-                    newPos.z = rayInfo.point.z;
+                    newPos.z = rayInfo.point.z - Velocity.magnitude;
+                    Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
+
+                    transform.position = newPos;
 
                     Velocity.z = 0;
                 }
@@ -263,14 +277,18 @@ public class PlayerMovementScript : MonoBehaviour
         }
         if (Velocity.z < 0)
         {
-            if (GetComponent<Rigidbody>().SweepTest(-Vector3.forward, out rayInfo, Velocity.magnitude))
+            Ray theRay = new Ray(transform.position, -Vector3.forward);
+            if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
                 // Wall collision
                 if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
                 {
                     Vector3 newPos = transform.position;
 
-                    newPos.z = rayInfo.point.z;
+                    newPos.z = rayInfo.point.z + Velocity.magnitude;
+                    Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
+
+                    transform.position = newPos;
 
                     Velocity.z = 0;
                 }
