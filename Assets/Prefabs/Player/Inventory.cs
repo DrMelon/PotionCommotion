@@ -340,13 +340,20 @@ public class Inventory : MonoBehaviour {
         }
     }
 
+    //TODO ------------------------------------------<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     void OnTriggerEnter(Collider collider)
     {
         if (collider.tag == "Ingredient")
         {
             print ("cool");
             //add item to inventory if there's space
-            //foreach (string 
+            foreach (string item in ingredientInventory)
+            {
+                if (item == "EMPTY")
+                {
+                    //item = collider.gameObject.name;
+                }
+            }
         }
     }
 
