@@ -13,6 +13,9 @@ public class PayloadBase : MonoBehaviour
 
     public PotionVialBaseScript myParentPotion; // This lets us track the potion that we came from, to apply its effects.
     public bool Activated = false;
+    public bool CheckProximity = false;
+    public float ProximityRadius = 5.0f;
+    public GameObject Thrower = null;
 
 	// Use this for initialization
 	void Start ()
@@ -21,9 +24,24 @@ public class PayloadBase : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	public virtual void Update ()
     {
-	
+	    if(CheckProximity)
+        {
+            // Look for players that aren't our thrower, in a radius.
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach(GameObject ply in players)
+            {
+                if(ply != Thrower)
+                {
+                    if (Vector3.Distance(ply.transform.position, this.transform.position) <= ProximityRadius)
+                    {
+                        // KABOOM!
+                        Activate();
+                    }
+                }
+            }
+        }
 	}
 
     public virtual void Activate()

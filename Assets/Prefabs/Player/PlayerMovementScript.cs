@@ -67,7 +67,7 @@ public class PlayerMovementScript : MonoBehaviour
     {
 		if ( ControllerToPlayerID == -1 ) return;
 		string PlayerID = ControllerToPlayerID.ToString();
-		print( PlayerID );
+
 
         // Get Movement
         if(!IsDiving)

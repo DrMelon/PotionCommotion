@@ -59,6 +59,12 @@ public class PlayerObjectThrowScript : MonoBehaviour
 		// Move projectile to the position of throwing object + add some offset if needed.
 		Projectile.position = transform.position + new Vector3( 0, 1.0f, 0 );
 
+        // If the projectile is a potion vial, let it know who threw it.
+        if (Projectile.GetComponent<PotionVialBaseScript>() != null)
+        {
+            Projectile.GetComponent<PotionVialBaseScript>().BelongTo = this.gameObject;
+        }
+
 		// Calculate distance to target
 		float target_Distance = Vector3.Distance( Projectile.position, Target.position );
 
