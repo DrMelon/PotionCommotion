@@ -82,6 +82,8 @@ public class PotionVialBaseScript : MonoBehaviour
             if (collisionInfo.collider.gameObject != BelongTo)
             {
                 RemainingBounces--;
+                // Make sure to bounce higher!
+                
                 if (RemainingBounces <= 0)
                 {
                     PotionPayload.Activate();
