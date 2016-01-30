@@ -30,6 +30,7 @@ public class PayloadGas : PayloadBase
             if (TimeAlive > MyParticles.GetComponent<ParticleSystem>().duration)
             {
                 // If time is up, destroy self.
+                MyParticles.GetComponent<SelfDestroy>().InitSelfDestruct(5.0f);
                 Destroy(this.gameObject);
             }
 
@@ -56,8 +57,11 @@ public class PayloadGas : PayloadBase
         // This is simply used to trigger the activation of the payload, based on its type.
         if (!Activated)
         {
-            MyParticles = (GameObject)Instantiate(SkullCloudParticles, this.transform.position, this.transform.rotation);
+            MyParticles = (GameObject)Instantiate(SkullCloudParticles, this.transform.position, Quaternion.LookRotation(Vector3.up));
+            
             Activated = true;
         }
     }
+
+
 }
