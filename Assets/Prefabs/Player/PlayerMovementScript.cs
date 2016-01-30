@@ -9,7 +9,8 @@ public class PlayerMovementScript : MonoBehaviour
     public Vector3 Acceleration;
 
     // Controller ID
-    public int ControllerID = 1;
+	public int ControllerID = 1;
+	public int ControllerToPlayerID = -1;
 
     // Movement Constants & Modifiers (for potion effects)
     public float AccelSpeed = 5.0f;
@@ -43,9 +44,17 @@ public class PlayerMovementScript : MonoBehaviour
     {
         Velocity = new Vector3(0, 0, 0);
         Acceleration = new Vector3(0, 0, 0);
-        
+
+		// Get the controller to player map from the MultiSceneVariablesScripts
+		int player = ControllerID;
+		MultiSceneVariablesScript script = GameObject.Find( "MultiSceneVariables" ).GetComponent<MultiSceneVariablesScript>();
+		if ( ( script.PlayerToController.ToArray().Length - 1 ) >= ( player - 1 ) )
+		{
+			ControllerToPlayerID = (int) script.PlayerToController.ToArray()[player-1];
+			print( ControllerToPlayerID );
+		}
     }
-	
+
 	// Update is called once per frame
 	void Update ()
     {
@@ -56,9 +65,10 @@ public class PlayerMovementScript : MonoBehaviour
     // For Input management
     void HandleInput()
     {
-        string PlayerID = ControllerID.ToString();
+		if ( ControllerToPlayerID == -1 ) return;
+		string PlayerID = ControllerToPlayerID.ToString();
+		print( PlayerID );
 
-        
         // Get Movement
         if(!IsDiving)
         {
@@ -80,7 +90,7 @@ public class PlayerMovementScript : MonoBehaviour
                 Acceleration.z = 0;
             }
 
-            if (Input.GetButtonDown("P" + PlayerID + "_Button_Jump"))
+			if ( Input.GetKeyDown( "joystick " + ControllerToPlayerID + " button 0" ) )
             {
                 if (OnGround)
                 {
@@ -89,7 +99,7 @@ public class PlayerMovementScript : MonoBehaviour
                 }
             }
 
-            if(Input.GetButtonDown("P" + PlayerID + "_Button_Dive"))
+			if ( Input.GetKeyDown( "joystick " + ControllerToPlayerID + " button 2" ) )
             {
                 if(OnGround)
                 {
@@ -216,9 +226,61 @@ public class PlayerMovementScript : MonoBehaviour
 
         }
 
-        
+        // failsafe
+        if(!OnGround && Velocity.y < 0 && transform.position.y <= 0)
+        {
+            OnGround = true;
+            transform.position = new Vector3(transform.position.x, 0 + GetComponent<Collider>().bounds.extents.y, transform.position.z);
+            Velocity.y = 0;
+        }
 
-        if(Velocity.x > 0)
+        // Player VS Player Collision
+        RaycastHit rayPlayer;
+        
+        if (GetComponent<Rigidbody>().SweepTest(this.transform.forward, out rayPlayer, Velocity.magnitude))
+        {
+            if(IsDiving)
+            {
+                // Diving exchanges velocities in extreme fashion.
+                if(rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>() != null)
+                {
+                    PlayerMovementScript otherPly = rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>();
+                    Vector3 tempVel = otherPly.Velocity;
+                    otherPly.Velocity = Velocity;
+                    otherPly.Velocity.y = 0.25f; // hop them off the ground when shoved.
+                    otherPly.IsDiving = true; // sieze control from them when shoved.
+                    otherPly.OnGround = false;
+
+                    // Use their velocity as our new one.
+                    Vector3 xzVel = Velocity;
+                    xzVel.y = 0;
+                    // Bounce off!
+                    Velocity = tempVel + (-xzVel * 0.6f);
+                }
+            }
+            else
+            {
+                // Otherwise, exchange velocities but gentler.
+                if (rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>() != null)
+                {
+                    PlayerMovementScript otherPly = rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>();
+                    Vector3 tempVel = otherPly.Velocity;
+                    otherPly.Velocity = Velocity * 0.5f;
+
+
+                    // Use their velocity as our new one.
+                    Vector3 xzVel = Velocity;
+                    xzVel.y = 0;
+                    // Bounce off!
+                    Velocity = tempVel + (-xzVel * 0.2f);
+                }
+            }
+
+        }
+
+
+        // Wall collisions
+        if (Velocity.x >= 0)
         {
             Ray theRay = new Ray(transform.position, Vector3.right);
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
@@ -237,7 +299,7 @@ public class PlayerMovementScript : MonoBehaviour
                 }
             }
         }
-        if(Velocity.x < 0)
+        if(Velocity.x <= 0)
         {
             Ray theRay = new Ray(transform.position, -Vector3.right);
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
@@ -256,7 +318,7 @@ public class PlayerMovementScript : MonoBehaviour
                 }
             }
         }
-        if (Velocity.z > 0)
+        if (Velocity.z >= 0)
         {
             Ray theRay = new Ray(transform.position, Vector3.forward);
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
@@ -275,7 +337,7 @@ public class PlayerMovementScript : MonoBehaviour
                 }
             }
         }
-        if (Velocity.z < 0)
+        if (Velocity.z <= 0)
         {
             Ray theRay = new Ray(transform.position, -Vector3.forward);
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
