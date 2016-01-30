@@ -54,13 +54,13 @@ public class Inventory : MonoBehaviour {
 
 
         //TEMP -- fill the player inventory with ingredients
-        ingredientInventory[0] = "Rocks";
-        ingredientInventory[1] = "Pizza";
-        ingredientInventory[2] = "Herbs";
+        ingredientInventory[0] = "Tomato";
+        ingredientInventory[1] = "Tin Can";
+        ingredientInventory[2] = "Newt Eye";
 
         potionInventory[0] = "Explosive";
-        potionInventory[1] = "Slime";
-        potionInventory[2] = "Proximity";
+        potionInventory[1] = "Proximity";
+        potionInventory[2] = "Special";
 
 
 
@@ -69,6 +69,21 @@ public class Inventory : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        //make sure the menu always faces the camera
+        playerCanvas.transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward);
+
+        if (menuActive == true)
+        {
+            RotateItems();
+        }
+
+        //rotate selected item
+        if (selectedItem != null)
+        {
+            selectedItem.transform.localEulerAngles = new Vector3(selectedItem.transform.localEulerAngles.x, selectedItem.transform.localEulerAngles.y + (20.0f * Time.deltaTime), selectedItem.transform.localEulerAngles.z);
+        }
+
+
         //Potions - Left Bumper
         if (Input.GetButtonDown("P1_Button_Potion_Inventory"))
         {
@@ -232,7 +247,7 @@ public class Inventory : MonoBehaviour {
         //instantiates an object
         //TODO -------------------------------------------------<<<<<<<<<<<<<<<<<<<
         //make this a child of the image
-        Vector3 itemPos = new Vector3(0, -45, 30);
+        Vector3 itemPos = new Vector3(0, -45, 40);
         Vector3 itemScale = new Vector3(3000, 3000, 3000);
 
         GameObject displayItem = (GameObject)Instantiate(Resources.Load(itemText[pos].text), new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
@@ -281,6 +296,22 @@ public class Inventory : MonoBehaviour {
         if (selectedSlot.transform.childCount > 0)
         {
             Destroy(selectedSlot.transform.GetChild(0).gameObject);
+        }
+    }
+
+    void RotateItems()
+    {
+        //delete the menu items
+        itemModels = playerCanvas.GetComponentsInChildren<Transform>();
+        foreach (Transform item in itemModels)
+        {
+            if (item != null)
+            {
+                if ((item.gameObject.tag == "Potion") || (item.gameObject.tag == "Ingredient"))
+                {
+                    item.localEulerAngles = new Vector3(item.localEulerAngles.x, item.localEulerAngles.y + (20.0f * Time.deltaTime), item.localEulerAngles.z);
+                }
+            }
         }
     }
 
