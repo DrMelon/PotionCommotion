@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour {
 
     //player can only have one item at a time
-    public string selectedItem;
+    public GameObject selectedItem;
+    public GameObject selectedSlot;
     private bool menuActive;
     private int menuPos;
     private bool leftPressed;
@@ -20,6 +21,7 @@ public class Inventory : MonoBehaviour {
     private GameObject playerCanvas;
     public Image[] itemImages;
     public Text[] itemText;
+    public Transform[] itemModels;
 
 	// Use this for initialization
 	void Start () {
@@ -39,6 +41,7 @@ public class Inventory : MonoBehaviour {
         //get the images
         itemImages = playerCanvas.GetComponentsInChildren<Image>();
         itemText = playerCanvas.GetComponentsInChildren<Text>();
+        itemModels = playerCanvas.GetComponentsInChildren<Transform>();
 
         playerCanvas.SetActive(false);
 
@@ -56,7 +59,7 @@ public class Inventory : MonoBehaviour {
         ingredientInventory[2] = "Herbs";
 
         potionInventory[0] = "Explosive";
-        potionInventory[1] = "Gas";
+        potionInventory[1] = "Slime";
         potionInventory[2] = "Proximity";
 
 
@@ -147,6 +150,20 @@ public class Inventory : MonoBehaviour {
                 rightPressed = false;
             }
         }
+
+
+        //item selection
+        if (menuActive == true)
+        {
+            if (Input.GetButtonDown("P1_Button_Jump"))
+            {
+                SelectItem();
+            }
+            if (Input.GetButtonDown("P1_Button_Dive"))
+            {
+                DeselectAllItems();
+            }
+        }
 	
 	}
 
@@ -155,22 +172,17 @@ public class Inventory : MonoBehaviour {
         menuActive = true;
         menuPos = 0;
         playerCanvas.SetActive(true);
+
+        //write the text
         WriteMenu(inventory);
-        InstantiateMenuItem(1);
     }
 
     void HideMenu()
     {
+        DeleteMenuItems();
         menuActive = false;
         menuPos = 0;
         playerCanvas.SetActive(false);
-
-        GameObject[] itemModels = playerCanvas.GetComponentsInChildren<GameObject>();
-        foreach (GameObject item in itemModels)
-        {
-            Destroy(item);
-        }
-
     }
 
     
@@ -192,7 +204,7 @@ public class Inventory : MonoBehaviour {
         //different cases for looping thru the list. Sorry this sucks lol
         if (menuPos == 3)
         {
-            itemText[1].text = inventory[menuPos - 1];
+            itemText[1].text = inventory[menuPos - 3];
             itemText[2].text = inventory[menuPos - 2];
         }
         else if (menuPos == 2)
@@ -205,25 +217,71 @@ public class Inventory : MonoBehaviour {
             itemText[1].text = inventory[menuPos + 1];
             itemText[2].text = inventory[menuPos + 2];
         }
+
+
+        //display the models
+        DeleteMenuItems();
+        for (int i = 0; i < 3; i++)
+        {
+            InstantiateMenuItem(i);
+        }
     }
 
-    void InstantiateMenuItem(int menuPos)
+    void InstantiateMenuItem(int pos)
     {
-
         //instantiates an object
         //TODO -------------------------------------------------<<<<<<<<<<<<<<<<<<<
         //make this a child of the image
-        Vector3 itemPos = new Vector3(0, -70, 30);
+        Vector3 itemPos = new Vector3(0, -45, 30);
         Vector3 itemScale = new Vector3(3000, 3000, 3000);
 
-        GameObject displayItem = (GameObject)Instantiate(Resources.Load(itemText[menuPos].text), itemPos, Quaternion.identity);
+        GameObject displayItem = (GameObject)Instantiate(Resources.Load(itemText[pos].text), new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
 
-        displayItem.transform.localScale.Set(itemScale.x, itemScale.y, itemScale.z);
+        displayItem.transform.SetParent(itemImages[pos].transform);
+
+        displayItem.transform.localPosition = new Vector3(itemPos.x, itemPos.y, itemPos.z);
+        displayItem.transform.localScale = new Vector3(itemScale.x, itemScale.y, itemScale.z);
+        displayItem.transform.localRotation = new Quaternion (Quaternion.identity.x, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
+    }
+
+    void DeleteMenuItems()
+    {
+        //delete the menu items
+        itemModels = playerCanvas.GetComponentsInChildren<Transform>();
+        foreach (Transform item in itemModels)
+        {
+            if (item != null)
+            {
+                if ((item.gameObject.tag == "Potion") || (item.gameObject.tag == "Ingredient"))
+                {
+                    Destroy(item.gameObject);
+                }
+            }
+        }
     }
 
     void SelectItem()
     {
+        //delete old object
+        DeselectAllItems();
+        
+
         //place the item in the player's hands
+        selectedItem = (GameObject)Instantiate(Resources.Load(itemText[1].text), new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+
+        selectedItem.transform.SetParent(selectedSlot.transform);
+        selectedItem.transform.localPosition = new Vector3(0.0f, 0.3f, 0.0f);
+        selectedItem.transform.localScale = new Vector3(30, 30, 30);
+        selectedItem.transform.localRotation = new Quaternion(Quaternion.identity.x, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
+    }
+
+    void DeselectAllItems()
+    {
+        //delete old object
+        if (selectedSlot.transform.childCount > 0)
+        {
+            Destroy(selectedSlot.transform.GetChild(0).gameObject);
+        }
     }
 
 }
