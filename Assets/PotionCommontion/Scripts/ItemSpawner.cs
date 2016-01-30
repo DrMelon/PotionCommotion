@@ -64,7 +64,7 @@ public class ItemSpawner : MonoBehaviour {
 
     void CreateObject(int item)
     {
-        Vector3 itemPos = new Vector3(Random.Range(minX, maxX), 2.75f, Random.Range(minZ, maxZ));
+        Vector3 itemPos = new Vector3(Random.Range(minX, maxX), 0.0f, Random.Range(minZ, maxZ));
 
 
         //create object

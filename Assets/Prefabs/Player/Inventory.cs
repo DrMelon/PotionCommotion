@@ -340,4 +340,14 @@ public class Inventory : MonoBehaviour {
         }
     }
 
+    void OnTriggerEnter(Collider collider)
+    {
+        if (collider.tag == "Ingredient")
+        {
+            print ("cool");
+            //add item to inventory if there's space
+            //foreach (string 
+        }
+    }
+
 }

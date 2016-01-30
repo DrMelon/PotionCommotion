@@ -217,14 +217,16 @@ public class PlayerMovementScript : MonoBehaviour
             // If we're falling through the air...
             if(!OnGround && Velocity.y < 0)
             {
-
-                if(rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                if (rayInfo.rigidbody != null)
                 {
-                    OnGround = true;
-                    Velocity.y = 0;
-                    Vector3 newPos = transform.position;
-                    newPos.y = rayInfo.point.y + this.transform.localScale.y / 2;
-                    transform.position = newPos;
+                    if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                    {
+                        OnGround = true;
+                        Velocity.y = 0;
+                        Vector3 newPos = transform.position;
+                        newPos.y = rayInfo.point.y + this.transform.localScale.y / 2;
+                        transform.position = newPos;
+                    }
                 }
                     
                 
@@ -291,17 +293,20 @@ public class PlayerMovementScript : MonoBehaviour
             Ray theRay = new Ray(transform.position, Vector3.right);
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
-                // Wall collision
-                if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                if (rayInfo.rigidbody != null)
                 {
-                    Vector3 newPos = transform.position;
+                    // Wall collision
+                    if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                    {
+                        Vector3 newPos = transform.position;
 
-                    newPos.x = rayInfo.point.x - Velocity.magnitude;
-                    Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
+                        newPos.x = rayInfo.point.x - Velocity.magnitude;
+                        Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
 
-                    transform.position = newPos;
+                        transform.position = newPos;
 
-                    Velocity.x = 0;
+                        Velocity.x = 0;
+                    }
                 }
             }
         }
@@ -310,17 +315,20 @@ public class PlayerMovementScript : MonoBehaviour
             Ray theRay = new Ray(transform.position, -Vector3.right);
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
-                // Wall collision
-				if ( rayInfo.rigidbody && rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag( "World" ) )
+                if (rayInfo.rigidbody != null)
                 {
-                    Vector3 newPos = transform.position;
+                    // Wall collision
+                    if (rayInfo.rigidbody && rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                    {
+                        Vector3 newPos = transform.position;
 
-                    newPos.x = rayInfo.point.x + Velocity.magnitude;
-                    Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
+                        newPos.x = rayInfo.point.x + Velocity.magnitude;
+                        Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
 
-                    transform.position = newPos;
+                        transform.position = newPos;
 
-                    Velocity.x = 0;
+                        Velocity.x = 0;
+                    }
                 }
             }
         }
@@ -329,17 +337,20 @@ public class PlayerMovementScript : MonoBehaviour
             Ray theRay = new Ray(transform.position, Vector3.forward);
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
-                // Wall collision
-                if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                if (rayInfo.rigidbody != null)
                 {
-                    Vector3 newPos = transform.position;
+                    // Wall collision
+                    if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                    {
+                        Vector3 newPos = transform.position;
 
-                    newPos.z = rayInfo.point.z - Velocity.magnitude;
-                    Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
+                        newPos.z = rayInfo.point.z - Velocity.magnitude;
+                        Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
 
-                    transform.position = newPos;
+                        transform.position = newPos;
 
-                    Velocity.z = 0;
+                        Velocity.z = 0;
+                    }
                 }
             }
         }
@@ -348,17 +359,20 @@ public class PlayerMovementScript : MonoBehaviour
             Ray theRay = new Ray(transform.position, -Vector3.forward);
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
-                // Wall collision
-                if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                if (rayInfo.rigidbody != null)
                 {
-                    Vector3 newPos = transform.position;
+                    // Wall collision
+                    if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+                    {
+                        Vector3 newPos = transform.position;
 
-                    newPos.z = rayInfo.point.z + Velocity.magnitude;
-                    Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
+                        newPos.z = rayInfo.point.z + Velocity.magnitude;
+                        Debug.DrawLine(transform.position, rayInfo.point, Color.red, 1000);
 
-                    transform.position = newPos;
+                        transform.position = newPos;
 
-                    Velocity.z = 0;
+                        Velocity.z = 0;
+                    }
                 }
             }
         }
