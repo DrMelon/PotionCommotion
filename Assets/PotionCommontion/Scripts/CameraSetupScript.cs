@@ -14,6 +14,8 @@ public class CameraSetupScript : MonoBehaviour
 
 	void Start()
 	{
+		Players = GameObject.Find( "MultiSceneVariables" ).GetComponent<MultiSceneVariablesScript>().Players;
+
 		Setup();
 	}
 

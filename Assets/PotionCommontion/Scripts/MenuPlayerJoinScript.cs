@@ -51,6 +51,15 @@ public class MenuPlayerJoinScript : MonoBehaviour
 					if ( !PlayerReady[player] )
 					{
 						PlayerControllerIDs[player] = -1;
+						// Reshuffle the other players to be in linear order from 0
+						if ( player < 3 )
+						{
+							for ( int swap = player; swap < 3; swap++ )
+							{
+								PlayerControllerIDs[swap] = PlayerControllerIDs[swap+1];
+								PlayerControllerIDs[swap+1] = -1;
+							}
+						}
 					}
 					// Otherwise just unready
 					else
@@ -90,6 +99,33 @@ public class MenuPlayerJoinScript : MonoBehaviour
 		// If all the player's who have joined are also ready then continue to the game
 		if ( ready )
 		{
+			// Store information for play state
+			MultiSceneVariablesScript script = GameObject.Find( "MultiSceneVariables" ).GetComponent<MultiSceneVariablesScript>();
+			{
+				// Number of players
+				int players = 0;
+				{
+					for ( int player = 3; player >= 0; player-- )
+					{
+						if ( PlayerControllerIDs[player] != -1 )
+						{
+							players = player + 1;
+							break;
+						}
+					}
+				}
+				script.Players = players;
+
+				// Mapping
+				script.PlayerToController.Clear();
+				for ( int player = 0; player < 4; player++ )
+				{
+					if ( PlayerControllerIDs[player] != -1 )
+					{
+						script.PlayerToController.Add( PlayerControllerIDs[player] );
+					}
+				}
+			}
 			Application.LoadLevel( "MatthewScene" );
 		}
 	}
@@ -124,7 +160,6 @@ public class MenuPlayerJoinScript : MonoBehaviour
 			// Isn't ready
 			else
 			{
-				print( "ready!" );
 				instruction.text = "Ready!";
 				instruction.color = Color.green;
 
