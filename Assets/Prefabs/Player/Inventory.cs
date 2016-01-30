@@ -278,7 +278,6 @@ public class Inventory : MonoBehaviour {
         displayItem.transform.localScale = new Vector3(itemScale.x, itemScale.y, itemScale.z);
         displayItem.transform.localRotation = new Quaternion (Quaternion.identity.x, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
 		char player = gameObject.name.ToCharArray()[gameObject.name.Length - 1];
-		print( player );
 		foreach ( Transform child in displayItem.GetComponentsInChildren<Transform>() )
 		{
 			child.gameObject.layer = LayerMask.NameToLayer( "Player" + (char) player );
