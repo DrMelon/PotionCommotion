@@ -18,6 +18,7 @@ public class PotionVialBaseScript : MonoBehaviour
 	public ArrayList StatAlters = new ArrayList(); // (StatAlterStruct)
 	// Reference to the internal liquid mesh of this vial object, for colouring
 	public GameObject LiquidMesh;
+    public PayloadBase PotionPayload;
 
 	void Start()
 	{
@@ -33,4 +34,13 @@ public class PotionVialBaseScript : MonoBehaviour
 		liquidparticle.GetComponent<Renderer>().material = LiquidMesh.GetComponent<Renderer>().material;
 		liquidparticle.Play();
 	}
+
+    public void OnCollisionEnter()
+    {
+        // Depending on potion type, do an explosion on collision?
+        if (PotionPayload != null)
+        {
+            PotionPayload.Activate();
+        }
+    }
 }
