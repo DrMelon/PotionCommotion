@@ -9,7 +9,8 @@ public class PlayerMovementScript : MonoBehaviour
     public Vector3 Acceleration;
 
     // Controller ID
-    public int ControllerID = 1;
+	public int ControllerID = 1;
+	public int ControllerToPlayerID = -1;
 
     // Movement Constants & Modifiers (for potion effects)
     public float AccelSpeed = 5.0f;
@@ -43,9 +44,17 @@ public class PlayerMovementScript : MonoBehaviour
     {
         Velocity = new Vector3(0, 0, 0);
         Acceleration = new Vector3(0, 0, 0);
-        
+
+		// Get the controller to player map from the MultiSceneVariablesScripts
+		int player = ControllerID;
+		MultiSceneVariablesScript script = GameObject.Find( "MultiSceneVariables" ).GetComponent<MultiSceneVariablesScript>();
+		if ( ( script.PlayerToController.ToArray().Length - 1 ) >= ( player - 1 ) )
+		{
+			ControllerToPlayerID = (int) script.PlayerToController.ToArray()[player-1];
+			print( ControllerToPlayerID );
+		}
     }
-	
+
 	// Update is called once per frame
 	void Update ()
     {
@@ -56,9 +65,10 @@ public class PlayerMovementScript : MonoBehaviour
     // For Input management
     void HandleInput()
     {
-        string PlayerID = ControllerID.ToString();
+		if ( ControllerToPlayerID == -1 ) return;
+		string PlayerID = ControllerToPlayerID.ToString();
+		print( PlayerID );
 
-        
         // Get Movement
         if(!IsDiving)
         {
@@ -80,7 +90,7 @@ public class PlayerMovementScript : MonoBehaviour
                 Acceleration.z = 0;
             }
 
-            if (Input.GetButtonDown("P" + PlayerID + "_Button_Jump"))
+			if ( Input.GetKeyDown( "joystick " + ControllerToPlayerID + " button 0" ) )
             {
                 if (OnGround)
                 {
@@ -89,7 +99,7 @@ public class PlayerMovementScript : MonoBehaviour
                 }
             }
 
-            if(Input.GetButtonDown("P" + PlayerID + "_Button_Dive"))
+			if ( Input.GetKeyDown( "joystick " + ControllerToPlayerID + " button 2" ) )
             {
                 if(OnGround)
                 {
