@@ -12,13 +12,14 @@ public class PayloadExplode : PayloadBase
     // Use this for initialization
     void Start ()
     {
-        // temp
-        //Activate(); 
+        
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	public override void Update()
     {
+        base.Update();
+
         if(explosionVisuals != null && Activated)
         {
             // Based on scale of visuals (which equates to radial explosion)
