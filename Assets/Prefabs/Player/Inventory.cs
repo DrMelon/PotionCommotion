@@ -12,6 +12,8 @@ public class Inventory : MonoBehaviour {
     private int menuPos;
     private bool leftPressed;
     private bool rightPressed;
+	// Reference to the player's camera
+	public GameObject LinkedCamera;
 
     public List<string> potionInventory;
     public List<string> ingredientInventory;
@@ -22,6 +24,8 @@ public class Inventory : MonoBehaviour {
     public Image[] itemImages;
     public Text[] itemText;
     public Transform[] itemModels;
+	// For lerping the player's camera towards and away from the inventory menu
+	private Vector3 CameraZoomStop;
 
 	// Use this for initialization
 	void Start () {
@@ -69,8 +73,11 @@ public class Inventory : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+		int playerid = GetComponent<PlayerMovementScript>().ControllerToPlayerID;
+
         //make sure the menu always faces the camera
-        playerCanvas.transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward);
+		if ( LinkedCamera == null ) return;
+		playerCanvas.transform.rotation = Quaternion.LookRotation( -LinkedCamera.transform.GetChild( 0 ).forward );
 
         if (menuActive == true)
         {
@@ -85,26 +92,26 @@ public class Inventory : MonoBehaviour {
 
 
         //Potions - Left Bumper
-        if (Input.GetButtonDown("P1_Button_Potion_Inventory"))
+		if ( Input.GetKeyDown( "joystick " + playerid + " button 4" ) )
         {
             //print("potions");
             potionInvTrue = true;
             ShowMenu(potionInventory);
             itemText[3].text = "POTIONS";
         }
-        //Ingredients - Right Bumper
-        if (Input.GetButtonDown("P1_Button_Ingredient_Inventory"))
+		//Ingredients - Right Bumper
+		if ( Input.GetKeyDown( "joystick " + playerid + " button 5" ) )
         {
             //print("ingredients");
             potionInvTrue = false;
             ShowMenu(ingredientInventory);
-            itemText[3].text = "INGREDIENTS";
+			itemText[3].text = "INGREDIENTS";
         }
 
         //Hide the menu again
-        if ((Input.GetButtonUp("P1_Button_Potion_Inventory")) || (Input.GetButtonUp("P1_Button_Ingredient_Inventory")))
+		if ( ( Input.GetKeyUp( "joystick " + playerid + " button 4" ) ) || ( Input.GetKeyUp( "joystick " + playerid + " button 5" ) ) )
         {
-            HideMenu();
+			HideMenu();
         }
 
 
@@ -112,8 +119,8 @@ public class Inventory : MonoBehaviour {
         //scrolling
         if (menuActive == true)
         {
-            //scroll right
-            if (Input.GetAxis("P1_Move_X") > 0)
+			//scroll right
+			if ( Input.GetAxis( "P" + playerid + "_Move_X" ) > 0 )
             {
                 if (rightPressed == false)
                 {
@@ -136,7 +143,7 @@ public class Inventory : MonoBehaviour {
                 }
             }
             //scroll left
-            if (Input.GetAxis("P1_Move_X") < 0)
+			if ( Input.GetAxis( "P" + playerid + "_Move_X" ) < 0 )
             {
                 if (leftPressed == false)
                 {
@@ -158,7 +165,7 @@ public class Inventory : MonoBehaviour {
                     rightPressed = false;
                 }
             }
-            if (Input.GetAxis("P1_Move_X") == 0)
+			if ( Input.GetAxis( "P" + playerid + "_Move_X" ) == 0 )
             {
                 //deactivate axis stuff
                 leftPressed = false;
@@ -170,16 +177,15 @@ public class Inventory : MonoBehaviour {
         //item selection
         if (menuActive == true)
         {
-            if (Input.GetButtonDown("P1_Button_Jump"))
+			if ( Input.GetKeyDown( "joystick " + playerid + " button 0" ) )
             {
                 SelectItem();
-            }
-            if (Input.GetButtonDown("P1_Button_Dive"))
+			}
+			if ( Input.GetKeyDown( "joystick " + playerid + " button 1" ) )
             {
                 DeselectAllItems();
             }
         }
-	
 	}
 
     void ShowMenu(List<string> inventory)
@@ -187,6 +193,13 @@ public class Inventory : MonoBehaviour {
         menuActive = true;
         menuPos = 0;
         playerCanvas.SetActive(true);
+
+		// Disable movement for inventory selection
+		GetComponent<PlayerMovementScript>().enabled = false;
+
+		// Zoom the camera towards the menu
+		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 7.5f;
+		//LinkedCamera.GetComponent<PlayerCameraFollowScript>().Angle = -10;
 
         //write the text
         WriteMenu(inventory);
@@ -198,6 +211,13 @@ public class Inventory : MonoBehaviour {
         menuActive = false;
         menuPos = 0;
         playerCanvas.SetActive(false);
+
+		// Reenable player's movement
+		GetComponent<PlayerMovementScript>().enabled = true;
+
+		// Zoom the camera back out
+		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 0;
+		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Angle = 0;
     }
 
     
@@ -257,6 +277,11 @@ public class Inventory : MonoBehaviour {
         displayItem.transform.localPosition = new Vector3(itemPos.x, itemPos.y, itemPos.z);
         displayItem.transform.localScale = new Vector3(itemScale.x, itemScale.y, itemScale.z);
         displayItem.transform.localRotation = new Quaternion (Quaternion.identity.x, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
+		char player = gameObject.name.ToCharArray()[gameObject.name.Length - 1];
+		foreach ( Transform child in displayItem.GetComponentsInChildren<Transform>() )
+		{
+			child.gameObject.layer = LayerMask.NameToLayer( "Player" + (char) player );
+		}
     }
 
     void DeleteMenuItems()

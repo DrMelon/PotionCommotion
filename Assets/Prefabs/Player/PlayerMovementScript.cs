@@ -48,10 +48,17 @@ public class PlayerMovementScript : MonoBehaviour
 		// Get the controller to player map from the MultiSceneVariablesScripts
 		int player = ControllerID;
 		MultiSceneVariablesScript script = GameObject.Find( "MultiSceneVariables" ).GetComponent<MultiSceneVariablesScript>();
-		if ( ( script.PlayerToController.ToArray().Length - 1 ) >= ( player - 1 ) )
 		{
-			ControllerToPlayerID = (int) script.PlayerToController.ToArray()[player-1];
-			print( ControllerToPlayerID );
+			int playeriter = 0;
+			foreach ( int playercon in script.PlayerToController.ToArray() )
+			{
+				if ( ( player - 1 ) == playeriter )
+				{
+					ControllerToPlayerID = playercon;
+					break;
+				}
+				playeriter++;
+			}
 		}
     }
 
@@ -68,22 +75,21 @@ public class PlayerMovementScript : MonoBehaviour
 		if ( ControllerToPlayerID == -1 ) return;
 		string PlayerID = ControllerToPlayerID.ToString();
 
-
         // Get Movement
         if(!IsDiving)
         {
-            if (Mathf.Abs(Input.GetAxis("P" + PlayerID + "_Move_X")) > 0.1f)
+			if ( Mathf.Abs( Input.GetAxis( "P" + ControllerToPlayerID + "_Move_X" ) ) > 0.1f )
             {
-                Acceleration.x = Input.GetAxis("P" + PlayerID + "_Move_X");
+				Acceleration.x = Input.GetAxis( "P" + ControllerToPlayerID + "_Move_X" );
             }
             else
             {
                 Acceleration.x = 0;
             }
 
-            if (Mathf.Abs(Input.GetAxis("P" + PlayerID + "_Move_Y")) > 0.1f)
+			if ( Mathf.Abs( Input.GetAxis( "P" + ControllerToPlayerID + "_Move_Y" ) ) > 0.1f )
             {
-                Acceleration.z = -Input.GetAxis("P" + PlayerID + "_Move_Y");
+				Acceleration.z = -Input.GetAxis( "P" + ControllerToPlayerID + "_Move_Y" );
             }
             else
             {
@@ -106,8 +112,8 @@ public class PlayerMovementScript : MonoBehaviour
                     OnGround = false;
                     IsDiving = true;
                     Velocity.y = JumpVelocity * JumpVelocityMultiplier * 0.5f;
-                    Velocity.x = Input.GetAxis("P" + PlayerID + "_Move_X") * DiveSpeed * DiveSpeedMultiplier;
-                    Velocity.z = -Input.GetAxis("P" + PlayerID + "_Move_Y") * DiveSpeed * DiveSpeedMultiplier;
+					Velocity.x = Input.GetAxis( "P" + ControllerToPlayerID + "_Move_X" ) * DiveSpeed * DiveSpeedMultiplier;
+					Velocity.z = -Input.GetAxis( "P" + ControllerToPlayerID + "_Move_Y" ) * DiveSpeed * DiveSpeedMultiplier;
                 }
             }
         }
@@ -242,7 +248,7 @@ public class PlayerMovementScript : MonoBehaviour
             if(IsDiving)
             {
                 // Diving exchanges velocities in extreme fashion.
-                if(rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>() != null)
+				if ( rayPlayer.rigidbody && rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>() != null )
                 {
                     PlayerMovementScript otherPly = rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>();
                     Vector3 tempVel = otherPly.Velocity;
@@ -261,7 +267,7 @@ public class PlayerMovementScript : MonoBehaviour
             else
             {
                 // Otherwise, exchange velocities but gentler.
-                if (rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>() != null)
+				if ( rayPlayer.rigidbody && rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>() != null )
                 {
                     PlayerMovementScript otherPly = rayPlayer.rigidbody.gameObject.GetComponent<PlayerMovementScript>();
                     Vector3 tempVel = otherPly.Velocity;
@@ -305,7 +311,7 @@ public class PlayerMovementScript : MonoBehaviour
             if (Physics.Raycast(theRay, out rayInfo, Velocity.magnitude))
             {
                 // Wall collision
-                if (rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag("World"))
+				if ( rayInfo.rigidbody && rayInfo.rigidbody.GetComponent<Collider>().gameObject.CompareTag( "World" ) )
                 {
                     Vector3 newPos = transform.position;
 

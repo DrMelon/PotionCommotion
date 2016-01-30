@@ -27,8 +27,25 @@ public class CameraSetupScript : MonoBehaviour
 		for ( int player = 0; player < Players; player++ )
 		{
 			camera = Instantiate( CameraPrefab );
-			camera.GetComponent<PlayerCameraFollowScript>().Player = GameObject.Find( "Player " + ( player + 1 ) );
-			camera.transform.parent = GameObject.Find( "Cameras" ).transform;
+			{
+				camera.GetComponent<PlayerCameraFollowScript>().Player = GameObject.Find( "Player " + ( player + 1 ) );
+				camera.transform.parent = GameObject.Find( "Cameras" ).transform;
+
+				Camera caminstance = camera.transform.GetChild( 0 ).GetComponent<Camera>();
+				int mask = 0;
+				{
+					for ( int maskplayer = 0; maskplayer < Players; maskplayer++ )
+					{
+						if ( player != maskplayer )
+						{
+							mask |= ( 1 << LayerMask.NameToLayer( "Player" + ( maskplayer + 1 ) ) );
+						}
+					}
+				}
+				caminstance.cullingMask = ~mask;
+
+				camera.GetComponent<PlayerCameraFollowScript>().Player.GetComponent<Inventory>().LinkedCamera = camera;
+			}
 			Cameras.Add( camera );
 		}
 
