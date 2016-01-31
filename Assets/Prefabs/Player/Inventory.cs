@@ -61,6 +61,7 @@ public class Inventory : MonoBehaviour {
         ingredientInventory[0] = "Tomato";
         ingredientInventory[1] = "Tin Can";
         ingredientInventory[2] = "Newt Eye";
+        ingredientInventory[3] = "Vial_Explosive";
 
         potionInventory[0] = "Explosive";
         potionInventory[1] = "Proximity";
@@ -73,10 +74,11 @@ public class Inventory : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-		int playerid = GetComponent<PlayerMovementScript>().ControllerToPlayerID;
+		//int playerid = GetComponent<PlayerMovementScript>().ControllerToPlayerID;
+        int playerid = GetComponent<PlayerControllerScript>().ControllerID;
 
         //make sure the menu always faces the camera
-		if ( LinkedCamera == null ) return;
+        if ( LinkedCamera == null ) return;
 		playerCanvas.transform.rotation = Quaternion.LookRotation( -LinkedCamera.transform.GetChild( 0 ).forward );
 
         if (menuActive == true)
@@ -195,10 +197,15 @@ public class Inventory : MonoBehaviour {
         playerCanvas.SetActive(true);
 
 		// Disable movement for inventory selection
-		GetComponent<PlayerMovementScript>().enabled = false;
+		GetComponent<PlayerControllerScript>().enabled = false;
+        GetComponent<PlayerObjectThrowScript>().enabled = false;
+        if ( selectedItem != null )
+        {
+            selectedItem.SetActive( false );
+        }
 
-		// Zoom the camera towards the menu
-		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 7.5f;
+        // Zoom the camera towards the menu
+        LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 7.5f;
 		//LinkedCamera.GetComponent<PlayerCameraFollowScript>().Angle = -10;
 
         //write the text
@@ -213,10 +220,15 @@ public class Inventory : MonoBehaviour {
         playerCanvas.SetActive(false);
 
 		// Reenable player's movement
-		GetComponent<PlayerMovementScript>().enabled = true;
+		GetComponent<PlayerControllerScript>().enabled = true;
+        GetComponent<PlayerObjectThrowScript>().enabled = true;
+        if ( selectedItem != null )
+        {
+            selectedItem.SetActive( true );
+        }
 
-		// Zoom the camera back out
-		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 0;
+        // Zoom the camera back out
+        LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 0;
 		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Angle = 0;
     }
 
@@ -280,8 +292,9 @@ public class Inventory : MonoBehaviour {
 		char player = gameObject.name.ToCharArray()[gameObject.name.Length - 1];
 		foreach ( Transform child in displayItem.GetComponentsInChildren<Transform>() )
 		{
-			child.gameObject.layer = LayerMask.NameToLayer( "Player" + (char) player );
+			child.gameObject.layer = LayerMask.NameToLayer( "PlayerOwned" + (char) player );
 		}
+        displayItem.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     void DeleteMenuItems()
@@ -340,13 +353,20 @@ public class Inventory : MonoBehaviour {
         }
     }
 
+    //TODO ------------------------------------------<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     void OnTriggerEnter(Collider collider)
     {
         if (collider.tag == "Ingredient")
         {
             print ("cool");
             //add item to inventory if there's space
-            //foreach (string 
+            foreach (string item in ingredientInventory)
+            {
+                if (item == "EMPTY")
+                {
+                    //item = collider.gameObject.name;
+                }
+            }
         }
     }
 

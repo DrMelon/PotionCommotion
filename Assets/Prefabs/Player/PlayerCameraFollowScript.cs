@@ -14,8 +14,22 @@ public class PlayerCameraFollowScript : MonoBehaviour
 
 	void Update()
 	{
-		Vector3 camforward = transform.GetChild( 0 ).forward;
-		Vector3 targetpos = ( Player.transform.position+ ( camforward * Height ) );
+        float height = Height;
+        {
+            foreach ( Collider collider in Physics.OverlapSphere( transform.position, 8 ) )
+            {
+                if ( collider.gameObject.name.Contains( "Cauldron" ) )
+                {
+                    if ( height == 0 )
+                    {
+                        height = 5;
+                    }
+                    break;
+                }
+            }
+        }
+        Vector3 camforward = transform.GetChild( 0 ).forward;
+		Vector3 targetpos = ( Player.transform.position+ ( camforward * height ) );
 		if ( Height == 0 )
 		{
 			targetpos += Player.transform.forward;

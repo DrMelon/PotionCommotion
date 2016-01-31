@@ -23,8 +23,8 @@ public class PlayerCauldronScript : MonoBehaviour
 	public GameObject LiquidSurface;
 	public Material Material_Colour;
 
-	// Store the ingredients currently in the cauldron (GameObject)
-	ArrayList Ingredients = new ArrayList();
+    // Store the ingredients currently in the cauldron (GameObject)
+    ArrayList Ingredients = new ArrayList();
 	float StartLiquidY;
 
 	void Start()
@@ -54,16 +54,16 @@ public class PlayerCauldronScript : MonoBehaviour
 	public void AddIngredient( GameObject ingredient )
 	{
 		PotionIngredientScript ingredientscript = ingredient.GetComponent<PotionIngredientScript>();
-		bool potionvialscript = false;
-		if ( ( !ingredientscript ) && ( !potionvialscript ) ) return;
+        PotionVialBaseScript potionvialscript = ingredient.GetComponent<PotionVialBaseScript>();
+        if ( ( !ingredientscript ) && ( !potionvialscript ) ) return;
 
 		// If the ingredient is a potion vial then different logic
 		if ( potionvialscript )
 		{
-			// ExtractVialBrew
-			return;
+            ExtractVialBrew( ingredient );
+            return;
 		}
-
+        else
 		// Otherwise add to the brew
 		{
 			// Add ingredient to stored array
@@ -105,10 +105,14 @@ public class PlayerCauldronScript : MonoBehaviour
 		liquidrender.material.SetFloat( "_Mode", 1.0f );
 		vial.GetComponent<PotionVialBaseScript>().InheritMaterial();
 
-		// Send potion vial back
+        // Send potion vial back
+        PlayerObjectThrowScript throws = OwnerPlayer.GetComponent<PlayerObjectThrowScript>();
+        throws.TargetAt = OwnerPlayer.transform;
+        throws.myTransform = transform;
+        throws.ThrowObjectAt();
 
-		// Clear brew, change colour/height back
-		LiquidSurface.transform.localPosition = new Vector3( 0, StartLiquidY, 0 );
+        // Clear brew, change colour/height back
+        LiquidSurface.transform.localPosition = new Vector3( 0, StartLiquidY, 0 );
 		LiquidSurface.GetComponent<Renderer>().material.color = Color.white;
 	}
 }

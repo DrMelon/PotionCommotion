@@ -38,7 +38,7 @@ public class CameraSetupScript : MonoBehaviour
 					{
 						if ( player != maskplayer )
 						{
-							mask |= ( 1 << LayerMask.NameToLayer( "Player" + ( maskplayer + 1 ) ) );
+							mask |= ( 1 << LayerMask.NameToLayer( "PlayerUI" + ( maskplayer + 1 ) ) );
 						}
 					}
 				}
