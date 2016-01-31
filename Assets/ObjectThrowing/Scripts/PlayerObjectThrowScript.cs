@@ -17,7 +17,7 @@ public class PlayerObjectThrowScript : MonoBehaviour
 	public Transform Projectile;
 	public Transform myTransform;
 
-	private bool itemDeleted;
+    private bool itemDeleted;
 	private int PlayerID;
 
 	void Start()
