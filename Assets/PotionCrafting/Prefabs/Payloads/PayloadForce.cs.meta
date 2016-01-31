@@ -1,14 +1,13 @@
 fileFormatVersion: 2
-guid: d7477cae6830cc941984130e81a2de7b
-timeCreated: 1454242274
+guid: d7ae30b304c7b2847a06e697562d0945
+timeCreated: 1454242286
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - myParentPotion: {instanceID: 0}
   - Thrower: {instanceID: 0}
-  - SkullCloudParticles: {fileID: 184964, guid: c81b97366d3b4f44d87f61ff3a3dad16,
-      type: 2}
+  - explosionEffect: {fileID: 142540, guid: b1bd7e3d2583dce47b9dbb2cdb229d25, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

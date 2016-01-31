@@ -24,21 +24,23 @@ public class PayloadExplode : PayloadBase
         {
             // Based on scale of visuals (which equates to radial explosion)
             // find players inside radius.
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
+            GameObject[] players = GameObject.FindObjectsOfType<GameObject>();
             foreach (GameObject ply in players)
             {
-                if (Vector3.Distance(ply.transform.position, this.transform.position) <= explosionVisuals.transform.localScale.x)
+                if (ply.tag.Contains("Player"))
                 {
-                    if (!StatusEffect)
+                    if (Vector3.Distance(ply.transform.position, this.transform.position) <= explosionVisuals.transform.localScale.x)
                     {
-                        // kill players in radius
-                        Debug.Log("Player " + ply.GetComponent<PlayerMovementScript>().ControllerID + " killed!");
-                    }
-                    else
-                    {
-                        // apply status effect instead
-                        Debug.Log("Player affected by status ailment!");
+                        if (!StatusEffect)
+                        {
+                            // kill players in radius
+                            
+                        }
+                        else
+                        {
+                            // apply status effect instead
+                            
+                        }
                     }
                 }
 
@@ -66,10 +68,6 @@ public class PayloadExplode : PayloadBase
             explosionVisuals = (GameObject)Instantiate(explosionEffect, this.transform.position, this.transform.rotation);
             Activated = true;
         }
-        
-        
-        
-
        
     }
 }

@@ -37,15 +37,17 @@ public class PayloadGas : PayloadBase
             TimeAlive += Time.deltaTime;
 
             // Anything within the gas cloud is affected by status effects (but only while inside it?)
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
+            GameObject[] players = GameObject.FindObjectsOfType<GameObject>();
             foreach (GameObject ply in players)
             {
-                if (Vector3.Distance(ply.transform.position, this.transform.position) <= GasRadius)
+                if (ply.tag.Contains("Player"))
                 {
+                    if (Vector3.Distance(ply.transform.position, this.transform.position) <= GasRadius)
+                    {
 
-                    Debug.Log("Player hit with status-altering gas.");
+                        Debug.Log("Player hit with status-altering gas.");
 
+                    }
                 }
             }
         }
