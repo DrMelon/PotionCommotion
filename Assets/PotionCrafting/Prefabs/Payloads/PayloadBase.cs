@@ -31,21 +31,17 @@ public class PayloadBase : MonoBehaviour
 	    if(CheckProximity)
         {
             // Look for players that aren't our thrower, in a radius.
-            GameObject[] players = GameObject.FindObjectsOfType<GameObject>();
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach(GameObject ply in players)
             {
-                if(ply.tag.Contains("Player"))
+                if(ply != Thrower)
                 {
-                    if (ply != Thrower)
+                    if (Vector3.Distance(ply.transform.position, this.transform.position) <= ProximityRadius)
                     {
-                        if (Vector3.Distance(ply.transform.position, this.transform.position) <= ProximityRadius)
-                        {
-                            // KABOOM!
-                            Activate();
-                        }
+                        // KABOOM!
+                        Activate();
                     }
                 }
-
             }
         }
 	}
