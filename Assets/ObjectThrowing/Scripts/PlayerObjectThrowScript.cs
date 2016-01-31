@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 // Matthew Cormack
 // 29th - 23:38
@@ -16,17 +17,21 @@ public class PlayerObjectThrowScript : MonoBehaviour
     public Transform Projectile;
     public Transform myTransform;
 
+    private bool itemDeleted;
+	private int PlayerID;
+
     void Start()
     {
         myTransform = transform;
+        itemDeleted = false;
     }
 
     void Update()
     {
-        int player = GetComponent<PlayerControllerScript>().ControllerID;
-        if ( player == -1 ) return;
+		PlayerID = GetComponent<PlayerControllerScript>().ControllerID;
+		if ( PlayerID == -1 ) return;
 
-        if ( Input.GetKeyDown( "joystick " + player + " button 3" ) )
+		if ( Input.GetKeyDown( "joystick " + PlayerID + " button 3" ) )
         {
             ThrowObject();
         }
@@ -59,6 +64,16 @@ public class PlayerObjectThrowScript : MonoBehaviour
         else
         {
             ThrowObjectForward();
+        }
+
+        //Delete the object from inventory
+        if (Projectile.tag == "Potion")
+        {
+            DeleteObjectFromInventory(gameObject.GetComponent<Inventory>().potionInventory);
+        }
+        else if (Projectile.tag == "Ingredient")
+        {
+            DeleteObjectFromInventory(gameObject.GetComponent<Inventory>().ingredientInventory);
         }
     }
 
@@ -126,6 +141,8 @@ public class PlayerObjectThrowScript : MonoBehaviour
 
         while ( elapse_time < flightDuration )
         {
+			if ( !Projectile.transform ) break;
+
             Projectile.Translate( 0, ( Vy - ( gravity * elapse_time ) ) * Time.deltaTime, Vx * Time.deltaTime );
 
             elapse_time += Time.deltaTime;
@@ -138,6 +155,25 @@ public class PlayerObjectThrowScript : MonoBehaviour
         if ( cauldronscr )
         {
             cauldronscr.AddIngredient( Projectile.gameObject );
+			// Add score
+			GameObject.Find( "MultiSceneVariables" ).GetComponent<MultiSceneVariablesScript>().AddScore( GetComponent<PlayerControllerScript>().PlayerID, 2 );
         }
+    }
+
+    void DeleteObjectFromInventory(List<string> inventory)
+    {
+        //Remove item from inventory
+        for (int i = 0; i < 4; i++)
+        {
+            if (inventory[i] == Projectile.gameObject.name.Substring(0, Projectile.gameObject.name.Length - 7))
+            {
+                if (itemDeleted == false)
+                {
+                    inventory[i] = "EMPTY";
+                    itemDeleted = true;
+                }
+            }
+        }
+        itemDeleted = false;
     }
 }
