@@ -6,8 +6,8 @@ using System.Collections;
 public class PayloadGas : PayloadBase
 {
 
-    public Object SkullCloudParticles = null;
-    GameObject MyParticles = null;
+    public Object SkullCloudParticles;
+    GameObject MyParticles;
     float TimeAlive = 0.0f;
     public float GasRadius = 6.0f;
 
@@ -16,7 +16,7 @@ public class PayloadGas : PayloadBase
 	// Use this for initialization
 	void Start ()
     {
-	
+        SkullCloudParticles = Resources.Load("Effects/Poison Cloud");
 	}
 	
 	// Update is called once per frame

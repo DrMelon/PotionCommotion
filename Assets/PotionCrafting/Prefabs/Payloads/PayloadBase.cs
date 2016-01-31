@@ -16,11 +16,13 @@ public class PayloadBase : MonoBehaviour
     public bool CheckProximity = false;
     public float ProximityRadius = 5.0f;
     public GameObject Thrower = null;
+    public bool StatusEffect = false;
+    public ArrayList StatusEffects = null; //PotionIngredientScript.StatAlterStruct
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {
-	
+       
 	}
 	
 	// Update is called once per frame
@@ -59,5 +61,40 @@ public class PayloadBase : MonoBehaviour
         {
             return;
         }
+    }
+
+    public static void ApplyStatusEffect(PotionIngredientScript.StatAlterStruct effect, PlayerControllerScript ply)
+    {
+        // This lets us apply the various status effects.
+        if(effect.Name.Contains("MoveSpeed"))
+        {
+            ply.m_RunSpeed *= effect.Multiplier;
+            ply.m_WalkSpeed *= effect.Multiplier;
+        }
+        if(effect.Name.Contains("JumpHeight"))
+        {
+            ply.m_JumpSpeed *= effect.Multiplier;
+        }
+    }
+
+    public static void UnApplyStatusEffect(PotionIngredientScript.StatAlterStruct effect, PlayerControllerScript ply)
+    {
+        // Undo the status effect.
+        if(effect.Name.Contains("MoveSpeed"))
+        {
+            ply.m_RunSpeed = 5;
+            ply.m_WalkSpeed = 15;
+        }
+        if (effect.Name.Contains("JumpHeight"))
+        {
+            ply.m_JumpSpeed = 5;
+        }
+    }
+
+    public static IEnumerator StatusEffectTimer(float time, PotionIngredientScript.StatAlterStruct effect, PlayerControllerScript ply)
+    {
+        yield return new WaitForSeconds(time);
+        PayloadBase.UnApplyStatusEffect(effect, ply);
+
     }
 }

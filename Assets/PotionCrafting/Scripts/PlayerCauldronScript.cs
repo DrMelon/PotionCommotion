@@ -112,8 +112,14 @@ public class PlayerCauldronScript : MonoBehaviour
         throws.myTransform = transform;
         throws.ThrowObjectAt();
 
+        // Get potion vial to generate properties.
+        script.ClearPayloads();
+        script.GeneratePayloadFromContents();
+
         // Clear brew, change colour/height back
         LiquidSurface.transform.localPosition = new Vector3( 0, StartLiquidY, 0 );
 		LiquidSurface.GetComponent<Renderer>().material.color = Color.white;
+
+        
 	}
 }

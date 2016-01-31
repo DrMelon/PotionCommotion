@@ -4,15 +4,15 @@ using System.Collections;
 public class PayloadBomberman : PayloadBase
 {
 
-    GameObject explosionVisuals = null;
-    public Object explosionEffect = null;
-    public bool StatusEffect = false; // can change this to turn on or off status effect mode
+    GameObject explosionVisuals;
+    public Object explosionEffect;
+    
 
 
     // Use this for initialization
     void Start()
     {
-
+        explosionEffect = Resources.Load("Effects/XPlosion");
     }
 
     // Update is called once per frame

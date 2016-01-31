@@ -17,6 +17,7 @@ public class PotionVialBaseScript : MonoBehaviour
     // Type of potion activation
     public enum PotionActivationType
     {
+        ACT_NONE,
         ACT_CONTACT,
         ACT_TIMER,
         ACT_PROXIMITY,
@@ -30,10 +31,11 @@ public class PotionVialBaseScript : MonoBehaviour
     public PayloadBase PotionPayload;
 
     // Each thrown potion knows who it belongs to.
-    public GameObject BelongTo = null; 
+    public GameObject BelongTo = null;
+    public bool ReadyToActivate = false;
 
-    // Potions default to timer activation.
-    public PotionActivationType ActivateMethod = PotionActivationType.ACT_TIMER;
+    // Potions default to contact activation.
+    public PotionActivationType ActivateMethod = PotionActivationType.ACT_CONTACT;
     int RemainingBounces = 5; // 5 bounces for ACT_BOUNCE potions.
 
 	void Start()
@@ -51,6 +53,82 @@ public class PotionVialBaseScript : MonoBehaviour
 		//liquidparticle.Play();
 	}
 
+    public void ClearPayloads()
+    {
+        
+        foreach(PayloadBase c in gameObject.GetComponents<PayloadBase>())
+        {
+            Destroy(c);
+        }
+        foreach (PayloadExplode c in gameObject.GetComponents<PayloadExplode>())
+        {
+            Destroy(c);
+        }
+        foreach (PayloadSlime c in gameObject.GetComponents<PayloadSlime>())
+        {
+            Destroy(c);
+        }
+        foreach (PayloadGas c in gameObject.GetComponents<PayloadGas>())
+        {
+            Destroy(c);
+        }
+        foreach (PayloadBomberman c in gameObject.GetComponents<PayloadBomberman>())
+        {
+            Destroy(c);
+        }
+        foreach (PayloadForce c in gameObject.GetComponents<PayloadForce>())
+        {
+            Destroy(c);
+        }
+    }
+
+    public void GeneratePayloadFromContents()
+    {
+        // Create a payload based on our contents.
+        PotionPayload = gameObject.AddComponent<PayloadExplode>();
+        PotionPayload.myParentPotion = this;
+        PotionPayload.StatusEffects = new ArrayList();
+
+        // Check statalters.
+        foreach (PotionIngredientScript.StatAlterStruct stats in StatAlters)
+        {
+            // First, payload types.
+            if(stats.Name.Contains("Gas") || stats.Name.Contains("Bomberman") || stats.Name.Contains("Slime"))
+            {
+                if(stats.Name.Contains("Gas"))
+                {
+                    PotionPayload = gameObject.AddComponent<PayloadGas>();
+                    PotionPayload.myParentPotion = this;
+                    PotionPayload.StatusEffects = new ArrayList();
+                }
+                if (stats.Name.Contains("Bomberman"))
+                {
+                    PotionPayload = gameObject.AddComponent<PayloadBomberman>();
+                    PotionPayload.myParentPotion = this;
+                    PotionPayload.StatusEffects = new ArrayList();
+                }
+                if (stats.Name.Contains("Slime"))
+                {
+                    PotionPayload = gameObject.AddComponent<PayloadSlime>();
+                    PotionPayload.myParentPotion = this;
+                    PotionPayload.StatusEffects = new ArrayList();
+                }
+            }
+        }
+
+        // Note: have to loop twice, so that the effects get applied properly to the latest payload.
+
+        foreach (PotionIngredientScript.StatAlterStruct stats in StatAlters)
+        {
+            // Then, player-applicable status effects.
+            PotionPayload.StatusEffect = true;
+            PotionPayload.StatusEffects.Add(stats);
+        }
+
+        StatAlters.Clear();
+
+    }
+
     public void OnCollisionEnter(Collision collisionInfo)
     {
         // Don't forget to set the payload's thrower too!
@@ -58,6 +136,12 @@ public class PotionVialBaseScript : MonoBehaviour
         {
             PotionPayload.Thrower = BelongTo;
         }
+        if(!ReadyToActivate)
+        {
+            // safety check! don't blow up just after leaving cauldron.
+            return;
+        }
+        
 
         // ACT_CONTACT potions explode as soon as they make contact physically with something, provided that what they
         // contact is not their own thrower!

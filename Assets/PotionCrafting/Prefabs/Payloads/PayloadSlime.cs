@@ -8,9 +8,9 @@ using System.Collections;
 public class PayloadSlime : PayloadBase
 {
 
-    public Object SlimeFloorObject = null;
-    public Object SlimeCloudParticles = null;
-    GameObject MyParticles = null;
+    public Object SlimeFloorObject;
+    public Object SlimeCloudParticles;
+    GameObject MyParticles;
     public int NumSplats = 10;
     float TimeAlive = 0.0f;
 
@@ -18,7 +18,8 @@ public class PayloadSlime : PayloadBase
     // Use this for initialization
     void Start()
     {
-
+        SlimeFloorObject = Resources.Load("Effects/SlimeSplot");
+        SlimeCloudParticles = Resources.Load("Effects/SlimeSplosion");
     }
 
     // Update is called once per frame

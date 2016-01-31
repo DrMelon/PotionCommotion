@@ -4,8 +4,8 @@ using System.Collections;
 public class PayloadForce : PayloadBase
 {
 
-    GameObject explosionVisuals = null;
-    public Object explosionEffect = null;
+    GameObject explosionVisuals;
+    public Object explosionEffect;
     
     // Force explosions don't use status effects.
 
@@ -13,7 +13,7 @@ public class PayloadForce : PayloadBase
     // Use this for initialization
     void Start()
     {
-
+        explosionEffect = Resources.Load("Effects/ForceExplosion");
     }
 
     // Update is called once per frame

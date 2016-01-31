@@ -4,16 +4,16 @@ using System.Collections;
 public class PayloadExplode : PayloadBase
 {
 
-    GameObject explosionVisuals = null;
-    public Object explosionEffect = null;
-    public bool StatusEffect = false; // can change this to turn on or off status effect mode
+    GameObject explosionVisuals;
+    public Object explosionEffect;
+    
     
 
     // Use this for initialization
     void Start ()
     {
-        
-	}
+        explosionEffect = Resources.Load("Effects/Explosion");
+    }
 	
 	// Update is called once per frame
 	public override void Update()
@@ -39,7 +39,14 @@ public class PayloadExplode : PayloadBase
                         else
                         {
                             // apply status effect instead
-                            
+                            foreach(PotionIngredientScript.StatAlterStruct effect in StatusEffects)
+                            {
+                                if(ply.GetComponent<PlayerControllerScript>() != null)
+                                {
+                                    PayloadBase.ApplyStatusEffect(effect, ply.GetComponent<PlayerControllerScript>());
+                                    StartCoroutine(PayloadBase.StatusEffectTimer(1.0f, effect, ply.GetComponent<PlayerControllerScript>()));
+                                }
+                            }
                         }
                     }
                 }
