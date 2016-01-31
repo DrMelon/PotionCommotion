@@ -292,7 +292,7 @@ public class Inventory : MonoBehaviour {
 		char player = gameObject.name.ToCharArray()[gameObject.name.Length - 1];
 		foreach ( Transform child in displayItem.GetComponentsInChildren<Transform>() )
 		{
-			child.gameObject.layer = LayerMask.NameToLayer( "Player" + (char) player );
+			child.gameObject.layer = LayerMask.NameToLayer( "PlayerOwned" + (char) player );
 		}
         displayItem.GetComponent<Rigidbody>().isKinematic = true;
     }
