@@ -168,6 +168,18 @@ public class PlayerObjectThrowScript : MonoBehaviour
 			{
 				if ( inventory[i] == "EMPTY" )
 				{
+					int num = 0;
+					{
+						for ( int posnum = 0; posnum < 50; posnum++ )
+						{
+							if ( !GameObject.Find( "Real_" + posnum ) )
+							{
+								num = posnum;
+								break;
+							}
+						}
+					}
+					Projectile.gameObject.name = "Real_" + num;
 					inventory[i] = Projectile.gameObject.name;
 					gameObject.GetComponent<Inventory>().Select( Projectile.gameObject );
 					break;

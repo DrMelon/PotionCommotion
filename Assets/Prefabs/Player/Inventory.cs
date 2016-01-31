@@ -327,18 +327,27 @@ public class Inventory : MonoBehaviour {
     {
         //delete old object
         DeselectAllItems();
-        
 
-        //place the item in the player's hands
-        selectedItem = (GameObject)Instantiate(Resources.Load(itemText[1].text), new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+		if ( itemText[1].text.Contains( "Real_" ) )
+		{
+			selectedItem = GameObject.Find( itemText[1].text );
+			selectedItem.transform.SetParent( selectedSlot.transform );
+			selectedItem.transform.localPosition = new Vector3( 0.0f, 0.3f, 0.0f );
+			selectedItem.transform.localRotation = Quaternion.identity;
+		}
+		else
+		{
+			//place the item in the player's hands
+			selectedItem = (GameObject)Instantiate(Resources.Load(itemText[1].text), new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
 
-        selectedItem.transform.SetParent(selectedSlot.transform);
-        selectedItem.transform.localPosition = new Vector3(0.0f, 0.3f, 0.0f);
-        selectedItem.transform.localScale = new Vector3(30, 30, 30);
-        selectedItem.transform.localRotation = new Quaternion(Quaternion.identity.x, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
+			selectedItem.transform.SetParent(selectedSlot.transform);
+			selectedItem.transform.localPosition = new Vector3(0.0f, 0.3f, 0.0f);
+			selectedItem.transform.localScale = new Vector3(30, 30, 30);
+			selectedItem.transform.localRotation = new Quaternion(Quaternion.identity.x, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
         
-        //Make sure the selected item is no longer a trigger
-        selectedItem.GetComponent<BoxCollider>().isTrigger = false;
+			//Make sure the selected item is no longer a trigger
+			selectedItem.GetComponent<BoxCollider>().isTrigger = false;
+		}
     }
 
     void DeselectAllItems()
@@ -346,7 +355,14 @@ public class Inventory : MonoBehaviour {
         //delete old object
         if (selectedSlot.transform.childCount > 0)
         {
-            Destroy(selectedSlot.transform.GetChild(0).gameObject);
+			GameObject selected = selectedSlot.transform.GetChild(0).gameObject;
+			if ( itemText[1].text.Contains( "Real_" ) )
+			{
+			}
+			else
+			{
+				Destroy( selected );
+			}
         }
     }
 

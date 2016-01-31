@@ -43,6 +43,8 @@ public class CameraSetupScript : MonoBehaviour
 					}
 				}
 				caminstance.cullingMask = ~mask;
+				camera.GetComponent<PlayerCameraFollowScript>().Player.transform.GetChild( 0 ).GetComponent<Canvas>().worldCamera = caminstance;
+				camera.GetComponent<PlayerCameraFollowScript>().Player.transform.GetChild( 0 ).GetComponent<Canvas>().planeDistance = 0.5f;
 
 				camera.GetComponent<PlayerCameraFollowScript>().Player.GetComponent<Inventory>().LinkedCamera = camera;
 			}
