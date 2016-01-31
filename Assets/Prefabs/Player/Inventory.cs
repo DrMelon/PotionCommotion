@@ -18,6 +18,7 @@ public class Inventory : MonoBehaviour {
     public List<string> potionInventory;
     public List<string> ingredientInventory;
     private bool potionInvTrue;
+    private bool itemPickedUp;
 
     //get the player's canvas
     private GameObject playerCanvas;
@@ -39,6 +40,7 @@ public class Inventory : MonoBehaviour {
         potionInventory = new List<string>();
         ingredientInventory = new List<string>();
         potionInvTrue = false;
+        itemPickedUp = false;
 
         //get the canvas
         playerCanvas = GameObject.Find("InventoryCanvas") as GameObject;
@@ -58,10 +60,10 @@ public class Inventory : MonoBehaviour {
 
 
         //TEMP -- fill the player inventory with ingredients
-        ingredientInventory[0] = "Tomato";
-        ingredientInventory[1] = "Tin Can";
-        ingredientInventory[2] = "Newt Eye";
-        ingredientInventory[3] = "Vial_Explosive";
+        //ingredientInventory[0] = "Tomato";
+        //ingredientInventory[1] = "Tin Can";
+        //ingredientInventory[2] = "Newt Eye";
+        //ingredientInventory[3] = "Vial_Explosive";
 
         potionInventory[0] = "Explosive";
         potionInventory[1] = "Proximity";
@@ -280,7 +282,15 @@ public class Inventory : MonoBehaviour {
         //TODO -------------------------------------------------<<<<<<<<<<<<<<<<<<<
         //make this a child of the image
         Vector3 itemPos = new Vector3(0, -45, 40);
-        Vector3 itemScale = new Vector3(3000, 3000, 3000);
+        Vector3 itemScale;
+        if (itemText[pos].text != "EMPTY")
+        {
+            itemScale = new Vector3(3000, 3000, 3000);
+        }
+        else
+        {
+            itemScale = new Vector3(0.0f, 0.0f, 0.0f);
+        }
 
         GameObject displayItem = (GameObject)Instantiate(Resources.Load(itemText[pos].text), new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
 
@@ -326,6 +336,9 @@ public class Inventory : MonoBehaviour {
         selectedItem.transform.localPosition = new Vector3(0.0f, 0.3f, 0.0f);
         selectedItem.transform.localScale = new Vector3(30, 30, 30);
         selectedItem.transform.localRotation = new Quaternion(Quaternion.identity.x, Quaternion.identity.y, Quaternion.identity.z, Quaternion.identity.w);
+        
+        //Make sure the selected item is no longer a trigger
+        selectedItem.GetComponent<BoxCollider>().isTrigger = false;
     }
 
     void DeselectAllItems()
@@ -353,21 +366,39 @@ public class Inventory : MonoBehaviour {
         }
     }
 
-    //TODO ------------------------------------------<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     void OnTriggerEnter(Collider collider)
     {
+        //REPEATED CODE don't look ok
+        //INGREDIENTS
         if (collider.tag == "Ingredient")
         {
-            print ("cool");
             //add item to inventory if there's space
-            foreach (string item in ingredientInventory)
+            for (int i = 0; i < 4; i++)
             {
-                if (item == "EMPTY")
+                if ((ingredientInventory[i] == "EMPTY") && (itemPickedUp == false))
                 {
-                    //item = collider.gameObject.name;
+                    ingredientInventory[i] = collider.gameObject.name.Substring(0, collider.gameObject.name.Length - 7);
+                    Destroy(collider.gameObject);
+                    itemPickedUp = true;
                 }
             }
         }
+        //POTIONS
+        else if (collider.tag == "Potion")
+        {
+            //add item to inventory if there's space
+            for (int i = 0; i < 4; i++)
+            {
+                if ((potionInventory[i] == "EMPTY") && (itemPickedUp == false))
+                {
+                    potionInventory[i] = collider.gameObject.name.Substring(0, collider.gameObject.name.Length - 7);
+                    Destroy(collider.gameObject);
+                    itemPickedUp = true;
+                }
+            }
+        }
+
+        itemPickedUp = false;
     }
 
 }

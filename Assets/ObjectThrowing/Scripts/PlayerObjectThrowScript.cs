@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 // Matthew Cormack
 // 29th - 23:38
@@ -16,9 +17,12 @@ public class PlayerObjectThrowScript : MonoBehaviour
     public Transform Projectile;
     public Transform myTransform;
 
+    private bool itemDeleted;
+
     void Start()
     {
         myTransform = transform;
+        itemDeleted = false;
     }
 
     void Update()
@@ -59,6 +63,16 @@ public class PlayerObjectThrowScript : MonoBehaviour
         else
         {
             ThrowObjectForward();
+        }
+
+        //Delete the object from inventory
+        if (Projectile.tag == "Potion")
+        {
+            DeleteObjectFromInventory(gameObject.GetComponent<Inventory>().potionInventory);
+        }
+        else if (Projectile.tag == "Ingredient")
+        {
+            DeleteObjectFromInventory(gameObject.GetComponent<Inventory>().ingredientInventory);
         }
     }
 
@@ -139,5 +153,22 @@ public class PlayerObjectThrowScript : MonoBehaviour
         {
             cauldronscr.AddIngredient( Projectile.gameObject );
         }
+    }
+
+    void DeleteObjectFromInventory(List<string> inventory)
+    {
+        //Remove item from inventory
+        for (int i = 0; i < 4; i++)
+        {
+            if (inventory[i] == Projectile.gameObject.name.Substring(0, Projectile.gameObject.name.Length - 7))
+            {
+                if (itemDeleted == false)
+                {
+                    inventory[i] = "EMPTY";
+                    itemDeleted = true;
+                }
+            }
+        }
+        itemDeleted = false;
     }
 }
