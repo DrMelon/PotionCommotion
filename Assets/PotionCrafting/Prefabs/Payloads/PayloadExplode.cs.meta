@@ -1,13 +1,10 @@
 fileFormatVersion: 2
 guid: 9f6aa54377ea04c4da7b6f30d3f12d5d
-timeCreated: 1454242296
+timeCreated: 1454171039
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences:
-  - myParentPotion: {instanceID: 0}
-  - Thrower: {instanceID: 0}
-  - explosionEffect: {fileID: 183462, guid: 17d9eb21884110a44a99cd6cb1f9f827, type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

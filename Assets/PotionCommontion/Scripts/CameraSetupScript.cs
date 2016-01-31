@@ -29,7 +29,6 @@ public class CameraSetupScript : MonoBehaviour
 			camera = Instantiate( CameraPrefab );
 			{
 				camera.GetComponent<PlayerCameraFollowScript>().Player = GameObject.Find( "Player " + ( player + 1 ) );
-				GameObject playerobj = camera.GetComponent<PlayerCameraFollowScript>().Player;
 				camera.transform.parent = GameObject.Find( "Cameras" ).transform;
 
 				Camera caminstance = camera.transform.GetChild( 0 ).GetComponent<Camera>();
@@ -44,10 +43,8 @@ public class CameraSetupScript : MonoBehaviour
 					}
 				}
 				caminstance.cullingMask = ~mask;
-				playerobj.transform.GetChild( 0 ).GetComponent<Canvas>().worldCamera = caminstance;
-				playerobj.transform.GetChild( 0 ).GetComponent<Canvas>().planeDistance = 0.5f;
 
-				playerobj.GetComponent<Inventory>().LinkedCamera = camera;
+				camera.GetComponent<PlayerCameraFollowScript>().Player.GetComponent<Inventory>().LinkedCamera = camera;
 			}
 			Cameras.Add( camera );
 		}
