@@ -74,10 +74,11 @@ public class Inventory : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-		int playerid = GetComponent<PlayerMovementScript>().ControllerToPlayerID;
+		//int playerid = GetComponent<PlayerMovementScript>().ControllerToPlayerID;
+        int playerid = GetComponent<PlayerControllerScript>().ControllerID;
 
         //make sure the menu always faces the camera
-		if ( LinkedCamera == null ) return;
+        if ( LinkedCamera == null ) return;
 		playerCanvas.transform.rotation = Quaternion.LookRotation( -LinkedCamera.transform.GetChild( 0 ).forward );
 
         if (menuActive == true)
@@ -196,7 +197,7 @@ public class Inventory : MonoBehaviour {
         playerCanvas.SetActive(true);
 
 		// Disable movement for inventory selection
-		GetComponent<PlayerMovementScript>().enabled = false;
+		GetComponent<PlayerControllerScript>().enabled = false;
         GetComponent<PlayerObjectThrowScript>().enabled = false;
         if ( selectedItem != null )
         {
@@ -219,7 +220,7 @@ public class Inventory : MonoBehaviour {
         playerCanvas.SetActive(false);
 
 		// Reenable player's movement
-		GetComponent<PlayerMovementScript>().enabled = true;
+		GetComponent<PlayerControllerScript>().enabled = true;
         GetComponent<PlayerObjectThrowScript>().enabled = true;
         if ( selectedItem != null )
         {
@@ -293,6 +294,7 @@ public class Inventory : MonoBehaviour {
 		{
 			child.gameObject.layer = LayerMask.NameToLayer( "Player" + (char) player );
 		}
+        displayItem.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     void DeleteMenuItems()
