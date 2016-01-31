@@ -27,6 +27,7 @@ public class HealthRespawn : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        //update the health UI
         foreach (Image heart in heartImages)
         {
             heart.enabled = false;
@@ -36,6 +37,21 @@ public class HealthRespawn : MonoBehaviour {
         {
             heartImages[i].enabled = true;
         }
-	
+
+
+        //respawn
+        if (playerHealth <= 0)
+        {
+            Respawn();
+        }
 	}
+
+    void Respawn()
+    {
+        //move the player back to the cauldron
+        GameObject cauldron = GameObject.Find("PlayerCauldron " + this.gameObject.name.Substring(7));
+
+        this.gameObject.transform.position = new Vector3(cauldron.transform.position.x, 1.5f, cauldron.transform.position.z);
+        playerHealth = 3;
+    }
 }
