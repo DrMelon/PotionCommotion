@@ -80,7 +80,7 @@ public class ItemSpawner : MonoBehaviour {
 
         int tempItem = Random.Range(0, 6);
 
-        if (itemCount <= 8)
+        if (itemCount < 8)
         {
             CreateObject(tempItem);
             itemCount += 1;
@@ -90,7 +90,7 @@ public class ItemSpawner : MonoBehaviour {
 
     IEnumerator DespawnObject()
     {
-        yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+        yield return new WaitForSeconds(Random.Range(2.0f, 4.0f));
 
         if (this.transform.childCount > 0)
         {
@@ -98,6 +98,28 @@ public class ItemSpawner : MonoBehaviour {
             itemCount -= 1;
         }
         StartCoroutine("DespawnObject");
+    }
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.tag == "Ingredient")
+        {
+            if ((collider.gameObject.GetComponent<BoxCollider>().isTrigger == false) && (collider.transform.parent == null))
+            {
+                print(collider.gameObject.name);
+                StartCoroutine("WaitToParent", collider);
+
+            }
+        }
+    }
+
+    IEnumerator WaitToParent(Collider collider)
+    {
+        yield return new WaitForSeconds(0.4f);
+        collider.transform.SetParent(this.transform);
+        collider.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        collider.gameObject.GetComponent<BoxCollider>().isTrigger = true;
+        itemCount += 1;
     }
 
 }

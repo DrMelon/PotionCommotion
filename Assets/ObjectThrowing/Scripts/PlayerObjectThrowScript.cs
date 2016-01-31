@@ -17,11 +17,11 @@ public class PlayerObjectThrowScript : MonoBehaviour
     public Transform Projectile;
     public Transform myTransform;
 
-<<<<<<< HEAD
+//<<<<<<< HEAD
     private bool itemDeleted;
-=======
+//=======
 	private int PlayerID;
->>>>>>> origin/master
+//>>>>>>> origin/master
 
     void Start()
     {
