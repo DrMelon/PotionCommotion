@@ -98,6 +98,7 @@ public class PlayerCauldronScript : MonoBehaviour
 				print( statalter.Name + " x" + statalter.Multiplier );
 			}
 		}
+		vial.GetComponent<PotionVialBaseScript>().LiquidMesh.SetActive( true );
 		Renderer liquidrender = vial.GetComponent<PotionVialBaseScript>().LiquidMesh.GetComponent<Renderer>();
 		liquidrender.material = Material_Colour;
 		liquidrender.material.color = LiquidSurface.GetComponent<Renderer>().material.color;

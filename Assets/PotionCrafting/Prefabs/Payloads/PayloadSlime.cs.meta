@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 5544a518aea9f18419f55283ffc3e7e1
+timeCreated: 1454244174
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - myParentPotion: {instanceID: 0}
+  - Thrower: {instanceID: 0}
+  - SlimeFloorObject: {fileID: 128388, guid: 3477271b4a3a25b4bb3eeb9d225a87fb, type: 2}
+  - SlimeCloudParticles: {fileID: 135468, guid: fa0346b2547a69b46bdd414a77e9acdc,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

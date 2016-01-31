@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ebff75c7664676b49b02af1d6931b60a
+timeCreated: 1454242308
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - myParentPotion: {instanceID: 0}
+  - Thrower: {instanceID: 0}
+  - explosionEffect: {fileID: 175860, guid: ed8a23827ac311847b341a4321679aa0, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
