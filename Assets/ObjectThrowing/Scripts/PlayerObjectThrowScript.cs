@@ -16,6 +16,8 @@ public class PlayerObjectThrowScript : MonoBehaviour
     public Transform Projectile;
     public Transform myTransform;
 
+	private int PlayerID;
+
     void Start()
     {
         myTransform = transform;
@@ -23,10 +25,10 @@ public class PlayerObjectThrowScript : MonoBehaviour
 
     void Update()
     {
-        int player = GetComponent<PlayerControllerScript>().ControllerID;
-        if ( player == -1 ) return;
+		PlayerID = GetComponent<PlayerControllerScript>().ControllerID;
+		if ( PlayerID == -1 ) return;
 
-        if ( Input.GetKeyDown( "joystick " + player + " button 3" ) )
+		if ( Input.GetKeyDown( "joystick " + PlayerID + " button 3" ) )
         {
             ThrowObject();
         }
@@ -126,6 +128,8 @@ public class PlayerObjectThrowScript : MonoBehaviour
 
         while ( elapse_time < flightDuration )
         {
+			if ( !Projectile.transform ) break;
+
             Projectile.Translate( 0, ( Vy - ( gravity * elapse_time ) ) * Time.deltaTime, Vx * Time.deltaTime );
 
             elapse_time += Time.deltaTime;
@@ -138,6 +142,8 @@ public class PlayerObjectThrowScript : MonoBehaviour
         if ( cauldronscr )
         {
             cauldronscr.AddIngredient( Projectile.gameObject );
+			// Add score
+			GameObject.Find( "MultiSceneVariables" ).GetComponent<MultiSceneVariablesScript>().AddScore( GetComponent<PlayerControllerScript>().PlayerID, 2 );
         }
     }
 }
