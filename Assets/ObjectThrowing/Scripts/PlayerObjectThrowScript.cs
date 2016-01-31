@@ -23,7 +23,7 @@ public class PlayerObjectThrowScript : MonoBehaviour
 
     void Update()
     {
-        int player = GetComponent<PlayerMovementScript>().ControllerToPlayerID;
+        int player = GetComponent<PlayerControllerScript>().ControllerID;
         if ( player == -1 ) return;
 
         if ( Input.GetKeyDown( "joystick " + player + " button 3" ) )
