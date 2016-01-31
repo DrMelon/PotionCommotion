@@ -61,6 +61,7 @@ public class Inventory : MonoBehaviour {
         ingredientInventory[0] = "Tomato";
         ingredientInventory[1] = "Tin Can";
         ingredientInventory[2] = "Newt Eye";
+        ingredientInventory[3] = "Vial_Explosive";
 
         potionInventory[0] = "Explosive";
         potionInventory[1] = "Proximity";
@@ -196,9 +197,14 @@ public class Inventory : MonoBehaviour {
 
 		// Disable movement for inventory selection
 		GetComponent<PlayerMovementScript>().enabled = false;
+        GetComponent<PlayerObjectThrowScript>().enabled = false;
+        if ( selectedItem != null )
+        {
+            selectedItem.SetActive( false );
+        }
 
-		// Zoom the camera towards the menu
-		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 7.5f;
+        // Zoom the camera towards the menu
+        LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 7.5f;
 		//LinkedCamera.GetComponent<PlayerCameraFollowScript>().Angle = -10;
 
         //write the text
@@ -214,9 +220,14 @@ public class Inventory : MonoBehaviour {
 
 		// Reenable player's movement
 		GetComponent<PlayerMovementScript>().enabled = true;
+        GetComponent<PlayerObjectThrowScript>().enabled = true;
+        if ( selectedItem != null )
+        {
+            selectedItem.SetActive( true );
+        }
 
-		// Zoom the camera back out
-		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 0;
+        // Zoom the camera back out
+        LinkedCamera.GetComponent<PlayerCameraFollowScript>().Height = 0;
 		LinkedCamera.GetComponent<PlayerCameraFollowScript>().Angle = 0;
     }
 

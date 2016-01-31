@@ -36,13 +36,15 @@ public class PlayerObjectThrowScript : MonoBehaviour
     public void ThrowObject()
     {
         // Set the projectile as the held object
-        if ( gameObject.GetComponent<Inventory>().selectedSlot.transform.GetChildCount() == 0 ) return;
+        if ( gameObject.GetComponent<Inventory>().selectedSlot.transform.childCount == 0 ) return;
         Projectile = gameObject.GetComponent<Inventory>().selectedSlot.transform.GetChild( 0 );
+        gameObject.GetComponent<Inventory>().selectedItem = null;
         Projectile.SetParent( null );
 
         // Handle type of throw
+        myTransform = transform;
         GameObject cauldron = null;
-        foreach ( Collider collider in Physics.OverlapSphere( transform.position, 15 ) )
+        foreach ( Collider collider in Physics.OverlapSphere( transform.position, 5 ) )
         {
             if ( collider.gameObject.name.Contains( "Cauldron" ) )
             {
@@ -52,7 +54,7 @@ public class PlayerObjectThrowScript : MonoBehaviour
         if ( cauldron )
         {
             TargetAt = cauldron.transform;
-            StartCoroutine( SimulateProjectile() );
+            ThrowObjectAt();
         }
         else
         {
@@ -60,7 +62,12 @@ public class PlayerObjectThrowScript : MonoBehaviour
         }
     }
 
-    void ThrowObjectForward()
+    public void ThrowObjectAt()
+    {
+        StartCoroutine( SimulateProjectile() );
+    }
+
+    public void ThrowObjectForward()
     {
         // Move projectile to the position of throwing object + add some offset if needed.
         //Projectile.position = transform.position + new Vector3( 0, 1.0f, 0 );
@@ -124,6 +131,13 @@ public class PlayerObjectThrowScript : MonoBehaviour
             elapse_time += Time.deltaTime;
 
             yield return null;
+        }
+
+        // Tell cauldron to receive
+        PlayerCauldronScript cauldronscr = TargetAt.GetComponentInParent<PlayerCauldronScript>();
+        if ( cauldronscr )
+        {
+            cauldronscr.AddIngredient( Projectile.gameObject );
         }
     }
 }
