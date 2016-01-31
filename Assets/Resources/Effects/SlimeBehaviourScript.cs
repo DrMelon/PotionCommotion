@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class SlimeBehaviourScript : MonoBehaviour
 {
@@ -11,10 +12,13 @@ public class SlimeBehaviourScript : MonoBehaviour
     float currentLife = 0.0f;
 
     List<Collider> affectedPlayers;
+    ArrayList StatusEffects;
 
+    
     // Use this for initialization
     void Start ()
     {
+        StatusEffects = new ArrayList();
         affectedPlayers = new List<Collider>();
         affectedPlayers.Clear();
     }
@@ -45,9 +49,18 @@ public class SlimeBehaviourScript : MonoBehaviour
         if(other.gameObject.tag.Contains("Player"))
         {
             // apply effect
+            // apply status effect instead
+            foreach (PotionIngredientScript.StatAlterStruct effect in StatusEffects)
+            {
+                if (other.gameObject.GetComponent<PlayerControllerScript>() != null)
+                {
+                    PayloadBase.ApplyStatusEffect(effect, other.gameObject.GetComponent<PlayerControllerScript>());
+                    StartCoroutine(PayloadBase.StatusEffectTimer(1.0f, effect, other.gameObject.GetComponent<PlayerControllerScript>()));
+                }
+            }
 
             // add to list of current players
-            if(!affectedPlayers.Contains(other))
+            if (!affectedPlayers.Contains(other))
             {
                 affectedPlayers.Add(other);
             }

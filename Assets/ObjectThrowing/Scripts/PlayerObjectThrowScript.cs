@@ -91,6 +91,8 @@ public class PlayerObjectThrowScript : MonoBehaviour
 		if ( Projectile.GetComponent<PotionVialBaseScript>() != null )
 		{
 			Projectile.GetComponent<PotionVialBaseScript>().BelongTo = this.gameObject;
+            // Ready to throw!
+            Projectile.GetComponent<PotionVialBaseScript>().ReadyToActivate = true;
 		}
 
 		// Calculate distance to target
@@ -179,7 +181,7 @@ public class PlayerObjectThrowScript : MonoBehaviour
 							}
 						}
 					}
-					Projectile.gameObject.name = "Real_" + num;
+					//Projectile.gameObject.name = "Real_" + num;
 					inventory[i] = Projectile.gameObject.name;
 					gameObject.GetComponent<Inventory>().Select( Projectile.gameObject );
 					break;
@@ -193,7 +195,13 @@ public class PlayerObjectThrowScript : MonoBehaviour
 		//Remove item from inventory
 		for ( int i = 0; i < 4; i++ )
 		{
-			if ( inventory[i] == Projectile.gameObject.name.Substring( 0, Projectile.gameObject.name.Length - 7 ) )
+            int removeLength = Projectile.gameObject.name.Length - 7;
+            if(removeLength < 0)
+            {
+                continue;
+            }
+
+            if ( inventory[i] == Projectile.gameObject.name.Substring( 0, Projectile.gameObject.name.Length - 7 ) )
 			{
 				if ( itemDeleted == false )
 				{

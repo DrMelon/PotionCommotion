@@ -45,7 +45,15 @@ public class PayloadGas : PayloadBase
                 {
 
                     Debug.Log("Player hit with status-altering gas.");
-
+                    // apply status effect instead
+                    foreach (PotionIngredientScript.StatAlterStruct effect in StatusEffects)
+                    {
+                        if (ply.GetComponent<PlayerControllerScript>() != null)
+                        {
+                            PayloadBase.ApplyStatusEffect(effect, ply.GetComponent<PlayerControllerScript>());
+                            StartCoroutine(PayloadBase.StatusEffectTimer(1.0f, effect, ply.GetComponent<PlayerControllerScript>()));
+                        }
+                    }
                 }
             }
         }

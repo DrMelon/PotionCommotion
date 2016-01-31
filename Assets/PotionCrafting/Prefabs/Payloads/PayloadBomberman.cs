@@ -37,13 +37,25 @@ public class PayloadBomberman : PayloadBase
                         {
                             if (!StatusEffect)
                             {
-                                // kill players in radius
-                                
+                                // hurt players in radius
+                                if (ply.GetComponent<HealthRespawn>() != null)
+                                {
+                                    ply.GetComponent<HealthRespawn>().HurtPlayer();
+                                }
+
                             }
                             else
                             {
                                 // apply status effect instead
-                                
+                           
+                                foreach (PotionIngredientScript.StatAlterStruct effect in StatusEffects)
+                                {
+                                    if (ply.GetComponent<PlayerControllerScript>() != null)
+                                    {
+                                        PayloadBase.ApplyStatusEffect(effect, ply.GetComponent<PlayerControllerScript>());
+                                        StartCoroutine(PayloadBase.StatusEffectTimer(1.0f, effect, ply.GetComponent<PlayerControllerScript>()));
+                                    }
+                                }
                             }
                         }
                     }

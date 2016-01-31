@@ -33,8 +33,11 @@ public class PayloadExplode : PayloadBase
                     {
                         if (!StatusEffect)
                         {
-                            // kill players in radius
-                            
+                            // hurt players in radius
+                            if(ply.GetComponent<HealthRespawn>() != null)
+                            {
+                                ply.GetComponent<HealthRespawn>().HurtPlayer();
+                            }
                         }
                         else
                         {

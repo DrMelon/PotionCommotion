@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class HealthRespawn : MonoBehaviour {
 
     public int playerHealth;
+    public float HitTime;
     private GameObject playerCanvas;
     private Image[] heartImages;
 
@@ -44,6 +45,13 @@ public class HealthRespawn : MonoBehaviour {
         {
             Respawn();
         }
+
+        // tick down invuln time
+        if(HitTime > 0)
+        {
+            HitTime -= Time.deltaTime;
+        }
+        
 	}
 
     void Respawn()
@@ -53,5 +61,14 @@ public class HealthRespawn : MonoBehaviour {
 
         this.gameObject.transform.position = new Vector3(cauldron.transform.position.x, 1.5f, cauldron.transform.position.z);
         playerHealth = 3;
+    }
+
+    public void HurtPlayer()
+    {
+        if(HitTime <= 0)
+        {
+            playerHealth--;
+            HitTime = 0.8f; //.8s of invulnerability.
+        }
     }
 }

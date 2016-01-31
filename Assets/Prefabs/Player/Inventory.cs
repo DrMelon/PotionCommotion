@@ -65,9 +65,9 @@ public class Inventory : MonoBehaviour {
         //ingredientInventory[2] = "Newt Eye";
         //ingredientInventory[3] = "Vial_Explosive";
 
-        potionInventory[0] = "Explosive";
-        potionInventory[1] = "Proximity";
-        potionInventory[2] = "Special";
+        //potionInventory[0] = "Explosive";
+        //potionInventory[1] = "Proximity";
+        //potionInventory[2] = "Special";
 
 
 
