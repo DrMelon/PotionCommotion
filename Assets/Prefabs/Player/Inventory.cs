@@ -401,4 +401,11 @@ public class Inventory : MonoBehaviour {
         itemPickedUp = false;
     }
 
+	public void Select( GameObject select )
+	{
+		selectedItem = select;
+		selectedItem.transform.SetParent( selectedSlot.transform );
+		selectedItem.transform.localPosition = new Vector3( 0.0f, 0.3f, 0.0f );
+		selectedItem.transform.localRotation = Quaternion.identity;
+	}
 }
